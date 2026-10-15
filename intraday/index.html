@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="description" content="NScheelje Strategy: historial de rendimiento, comparación con VOO y análisis de riesgo.">
+<title>NScheelje · Monitor intradiario</title>
+<style>
+:root{color-scheme:light;--bg:#f7f8fa;--card:#fff;--ink:#243244;--muted:#677486;--line:#e5e9ee;--green:#168071;--red:#ba4c5a;--blue:#7184a4}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select{font:inherit}a{color:inherit}button,select,.file-label{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:6px 9px;cursor:pointer}button:hover,.file-label:hover{background:#f1f4f7}button:disabled{opacity:.5;cursor:default}:focus-visible{outline:2px solid var(--green);outline-offset:3px}[hidden]{display:none!important}.skip{position:absolute;top:-80px;left:16px;z-index:5;background:white;padding:10px}.skip:focus{top:10px}
+header{background:var(--card);border-bottom:1px solid var(--line)}.top{max-width:1280px;margin:auto;min-height:60px;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:10px}.monogram{width:30px;height:30px;border-radius:6px;background:var(--ink);color:white;display:grid;place-items:center;font:600 10px ui-monospace,monospace}.brand strong{font-size:12px;letter-spacing:.07em}.eyebrow{color:var(--muted);font-size:10px;letter-spacing:.04em}.registry{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font:11px ui-monospace,monospace;padding:5px 8px;border:1px solid var(--line);border-radius:5px}.registry svg{width:13px;height:13px}.header-right{display:flex;align-items:center;gap:16px}.last{text-align:right;font-size:11px}.muted{color:var(--muted)}main{max-width:1280px;margin:auto;padding:20px 24px 30px}.intro{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.intro h1{font-size:19px;line-height:1.3;font-weight:600;letter-spacing:-.025em;margin:0}.period-chip{font-size:11px;color:var(--muted);white-space:nowrap}.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:12px}.card{background:var(--card);border:1px solid var(--line);border-radius:6px}.kpi{padding:12px 14px}.label{font-size:10px;letter-spacing:.025em;color:var(--muted)}.value{font-size:23px;line-height:1.25;font-weight:600;letter-spacing:-.035em;font-variant-numeric:tabular-nums;margin:7px 0}.small{font-size:11px}.positive{color:var(--green)}.negative{color:var(--red)}.neutral{color:var(--muted)}.metric-foot{min-height:17px;font-size:10px;color:var(--muted)}.comparison{display:flex;align-items:center;justify-content:space-between;gap:5px;border-top:1px solid var(--line);padding-top:7px;margin-top:7px;color:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}.comparison strong{font-size:10px;font-weight:500;letter-spacing:0;white-space:nowrap}.dd-value{display:flex;align-items:baseline;gap:5px}.dd-value small{font-size:13px;letter-spacing:0}.badge{font-size:10px;background:#f7f3ea;color:#826637;padding:1px 4px;border-radius:3px}
+.panel{padding:15px 16px;margin-bottom:10px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}h2{font-size:13px;font-weight:600;margin:0;letter-spacing:-.01em}p{margin:5px 0 9px}.panel-head p{margin-bottom:0}.ranges{display:flex;gap:2px;flex-wrap:wrap;background:#f4f6f8;padding:2px;border-radius:5px}.ranges button{border:0;background:transparent;padding:4px 8px;color:var(--muted);font-size:11px}.ranges button[aria-pressed=true]{background:var(--ink);color:white}.chart-meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:12px 0 0;font-size:11px}.legend{display:flex;gap:16px}.legend span{display:flex;align-items:center;gap:6px}.swatch{width:14px;height:2px;background:var(--green);display:inline-block}.swatch.dd{background:var(--red)}.swatch.bench{height:0;background:transparent;border-top:2px dashed var(--blue)}.chart{position:relative;width:100%;min-height:100px}.chart svg{display:block;width:100%;touch-action:pan-y}.chart.empty{display:grid;place-items:center;min-height:220px;color:var(--muted)}.tooltip{position:absolute;z-index:2;width:228px;max-width:calc(100% - 16px);background:var(--card);border:1px solid #d8dfe7;border-radius:6px;box-shadow:0 4px 18px #24324416;padding:10px 12px;pointer-events:none;font-size:11px}.tooltip-title{font-weight:600;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--line)}.tooltip-row{display:flex;justify-content:space-between;gap:10px;margin:4px 0;color:var(--muted)}.tooltip-row strong{font-weight:600;font-variant-numeric:tabular-nums}.tooltip-row.emphasis{border-top:1px solid var(--line);padding-top:6px;margin-top:6px;color:var(--ink)}.chart-hint{font-size:10px;color:var(--muted);margin:2px 0 0}.chart-hint span{margin-right:10px}.chart-table summary{font-size:11px;padding-top:9px;color:var(--muted);cursor:pointer}.compare-toggle{display:inline-flex;align-items:center;gap:6px;font-size:11px;cursor:pointer}.compare-toggle input{margin:0;accent-color:var(--blue);width:14px;height:14px}.compare-toggle:has(input:disabled){color:var(--muted);cursor:default}
+details.panel{padding:0}details.panel>summary{padding:12px 16px;cursor:pointer;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:12px}details.panel>summary::-webkit-details-marker{display:none}details.panel>summary:after{content:"+";color:var(--muted)}details.panel[open]>summary:after{content:"−"}.detail-body{padding:0 16px 14px;border-top:1px solid var(--line)}.detail-body>p:first-child{margin-top:12px}.trailing{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:12px}.trailing>div{padding:10px;background:#f7f8fa;border-radius:4px}.trailing strong{display:block;font-size:16px;font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums}.note{background:#f7f8fa;border-left:2px solid #cbd5df;padding:9px 11px;font-size:11px;color:var(--muted);margin-top:12px}.note.warn{background:#faf7f0;border-color:#cbb893;color:#7d633e}.tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px}.tools input[type=number]{width:75px;padding:5px;border:1px solid var(--line);border-radius:4px}.file-label input{position:absolute;width:1px;height:1px;opacity:0}.file-label:focus-within{outline:2px solid var(--green);outline-offset:3px}.scroll{overflow:auto;margin-top:10px}table{width:100%;border-collapse:collapse;font-size:11px;font-variant-numeric:tabular-nums}th,td{padding:8px 6px;white-space:nowrap;text-align:right;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:500}th:first-child,td:first-child{text-align:left}caption{text-align:left;font-size:10px;color:var(--muted);margin-bottom:6px}.heatmap{min-width:760px}.heatmap td:not(:first-child){border:3px solid var(--card);border-radius:4px;text-align:center;font-weight:500}.heatmap th:not(:first-child){text-align:center}.heatmap td:last-child{font-weight:600}.monthly-note{margin:8px 0 0;font-size:10px;color:var(--muted)}.status{font-size:12px;padding:9px 12px;border:1px solid var(--line);border-radius:5px;background:var(--card);margin-bottom:12px}.status.error{color:#9c3043;border-color:#e7b7c1;background:#fff4f6}.disclosure{font-size:11px;color:var(--muted);margin:16px 0 0;max-width:900px}footer{max-width:1280px;margin:auto;border-top:1px solid var(--line);padding:14px 24px 20px;display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:10px}li{margin:7px 0}
+@media(max-width:1100px){.kpi{padding:11px}.comparison{flex-wrap:wrap}.value{font-size:21px}.dd-value small{font-size:12px}}
+@media(max-width:850px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}.comparison{flex-wrap:nowrap}.header-right{gap:10px}}
+@media(max-width:560px){.top{padding:10px 14px;gap:10px;flex-wrap:wrap}.header-right{width:100%;justify-content:space-between}.last{text-align:left}.last br{display:none}.last .muted{margin-right:5px}.brand strong{font-size:11px}main{padding:16px 12px 24px}.intro{gap:8px;flex-wrap:wrap}.intro h1{font-size:17px}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.cards .kpi:last-child{grid-column:span 2}.panel{padding:12px}.ranges button{padding:4px 7px}.legend{gap:12px}.trailing{grid-template-columns:repeat(2,1fr)}.detail-body{padding:0 12px 12px}details.panel>summary{padding:12px}.chart-meta{gap:7px}footer{padding:14px 12px;flex-direction:column}}
+
+/* Gráficos de líneas con escala lateral y valores al cierre. */
+#performance svg{user-select:none}.swatch{background:#008fa8}.swatch.bench{border-color:#8792a2}.chart-hint{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.chart-hint button{font-size:10px;padding:3px 7px}.advanced-table{min-width:650px}.advanced-table th:last-child,.advanced-table td:last-child{text-align:left;white-space:normal;width:48%;color:var(--muted)}.advanced-table td:first-child{font-weight:500}.advanced-table td:not(:last-child){font-variant-numeric:tabular-nums}.advanced-table td:nth-child(2),.advanced-table td:nth-child(3){font-weight:600}.advanced-context{font-size:11px;color:var(--muted);margin:11px 0 2px}
+.live-panel{border-top:2px solid #008fa8}.live-panel h2{font-size:16px;margin-top:3px}.live-actions{display:flex;gap:10px;align-items:center}.live-state{font-size:10px;border-radius:4px;padding:4px 7px;background:#f2f4f7;color:#677486}.live-state.ok{background:#edf6f4;color:#168071}.live-state.warn{background:#faf3e7;color:#826637}.live-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:18px 0 12px}.live-kpis>div:not(:last-child){border-right:1px solid var(--line)}.live-kpis strong{display:block;font-size:23px;font-weight:600;letter-spacing:-.03em;margin:4px 0;font-variant-numeric:tabular-nums}.live-dd-head{margin-top:16px}.daily-heading{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:22px 0 12px}.live-panel .note{margin-top:8px}.live-panel .chart-meta{align-items:center}.live-panel .tooltip{width:235px}.live-panel summary{cursor:pointer}.live-panel svg{user-select:none}#live-equity{margin-top:8px}#live-refresh{font-size:11px}#live-records,#live-sources{min-width:420px}.live-panel .tooltip-row:last-child{margin-bottom:0}footer a{text-decoration:none}.intro{margin-bottom:12px}@media(max-width:560px){.live-kpis{grid-template-columns:repeat(2,1fr);gap:12px}.live-kpis>div:nth-child(2){border-right:0}.live-kpis strong{font-size:22px}.live-actions{width:100%;justify-content:space-between}.daily-heading .small{font-size:10px}.live-panel .ranges button{padding:4px 9px}}
+
+</style>
+<meta name="robots" content="noindex,nofollow"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://raw.githubusercontent.com; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none';"><style>.pages-access{max-width:430px;margin:8vh auto;padding:26px}.pages-access h1{font-size:22px;margin:0 0 12px}.pages-access label{display:block;margin:20px 0 6px}.pages-access input{width:100%;padding:11px;border:1px solid var(--line);border-radius:5px}.pages-access button{margin-top:12px;background:#008fa8;color:white;border:0;padding:10px 14px}.pages-access .small{line-height:1.65}.pages-remember{display:flex!important;align-items:center;gap:8px}.pages-remember input{width:auto!important;margin:0}#pages-lock{font-size:11px}@media(max-width:560px){.pages-access{margin:30px 14px;padding:22px}}</style></head>
+<body>
+<a class="skip" href="#main">Ir al contenido</a>
+<header><div class="top"><div class="brand"><span class="monogram" aria-hidden="true">NS</span><div><strong>NSCHEELJE STRATEGY</strong><div class="eyebrow">Monitor privado · Intradiario</div></div></div><div class="header-right"><div class="last"><span class="muted">Último cierre</span><br><span id="last-date">—</span> <strong id="daily"></strong></div><span class="registry">Datos cifrados</span><button id="pages-lock" hidden>Cerrar sesión</button></div></div></header>
+<section id="pages-access" class="card pages-access" aria-labelledby="pages-access-title"><div class="eyebrow">NSCHEELJE · MONITOR PERSONAL</div><h1 id="pages-access-title">Tu portafolio, durante el día</h1><p class="muted">Historial EOD y lecturas intradiarias, con comparación frente a VOO o QQQ.</p><form id="pages-access-form"><label for="pages-password">Clave de acceso</label><input id="pages-password" type="password" autocomplete="current-password" required aria-describedby="pages-access-message"><label class="small pages-remember"><input id="pages-remember" type="checkbox" checked>Recordar acceso en este dispositivo durante 90 días</label><button id="pages-unlock" type="submit">Abrir monitor</button></form><p id="pages-access-message" class="small muted" role="status">Configura este dispositivo una vez desde tu página privada o carga tu archivo de acceso. La clave se utiliza en el navegador y no se envía a GitHub.</p><details class="chart-table"><summary>Configurar un dispositivo nuevo</summary><p class="small muted">Abre tu página privada y pulsa «Configurar este dispositivo». Si ya guardaste una copia del archivo de acceso, puedes cargarla aquí. El navegador recuerda tu acceso si marcas la opción. «Cerrar sesión» lo elimina. Para un equipo nuevo puedes cargar tu archivo personal.</p><a class="small" href="https://nscheelje-intraday.deeplemon17.chatgpt.site/acceso-github" target="_blank" rel="noopener noreferrer">Abrir configuración privada ↗</a><label class="small" for="pages-access-file">Cargar archivo de acceso personal</label><input id="pages-access-file" type="file" accept=".json,.txt,application/json,text/plain"></details><p class="small muted">Guarda tu clave y una copia del archivo de acceso para usar el monitor en otros dispositivos, incluso después de dejar ChatGPT.</p><a class="small muted" href="../">Ver la página diaria ↗</a></section><main id="main" hidden>
+<div class="intro"><h1>NScheelje · Monitor personal</h1><span id="period-chip" class="period-chip">Esperando datos</span></div>
+<div id="status" class="status" role="status" aria-live="polite">Cargando historial…</div>
+<section class="card panel live-panel" aria-labelledby="live-title">
+<div class="panel-head"><div><div class="eyebrow">MONITOR PERSONAL · HORA DE PERÚ</div><h2 id="live-title" tabindex="-1">Curva de capital · EOD + intradiario</h2><p class="small muted" id="live-baseline">Esperando la primera lectura.</p></div><div class="live-actions"><label class="small muted">Comparar con <select id="benchmark-choice" aria-label="Índice de comparación"><option value="VOO">VOO · S&amp;P 500</option><option value="QQQ">QQQ · Nasdaq-100</option></select></label><span id="live-state" class="live-state">Pendiente de conexión</span><button id="live-refresh">Actualizar</button></div></div>
+<div class="live-kpis">
+<div><span class="label">Desde el último cierre</span><strong id="live-return">—</strong></div>
+<div><span class="label"><span data-benchmark-label>VOO</span> · mismo inicio</span><strong id="live-benchmark">—</strong></div>
+<div><span class="label">Diferencia vs <span data-benchmark-label>VOO</span></span><strong id="live-difference">—</strong></div>
+<div><span class="label">Drawdown actual</span><strong id="live-dd">—</strong></div>
+</div>
+<div id="live-message" class="note" role="status">La página está lista. Falta conectar el actualizador al repositorio privado para recibir cotizaciones cada 15 minutos.</div>
+<p class="small muted" id="live-history-note">Cargando el historial de cierres EOD.</p>
+<div class="chart-meta"><div class="legend"><span><i class="swatch"></i>NScheelje Strategy</span><span><i class="swatch bench"></i><span data-benchmark-label>VOO</span></span></div><div class="ranges" aria-label="Tramo intradiario"><button data-live-range="1D" aria-pressed="false">HOY</button><button data-live-range="1W" aria-pressed="false">1S</button><button data-live-range="ALL" aria-pressed="true">TOTAL</button></div></div>
+<div id="live-equity" class="chart empty">Aún no hay lecturas intradiarias.</div>
+<div class="chart-hint"><span>Historial desde el primer EOD; después, lecturas intradiarias. Cursor o toque para consultar cada registro.</span><span id="live-update-note">Consulta automática cada 15 minutos.</span></div>
+<details class="chart-table"><summary>Drawdown · EOD + intradiario</summary><div class="panel-head live-dd-head"><span class="small muted">Máximos observados · incluye el historial diario</span><label class="compare-toggle"><input id="live-compare-dd" type="checkbox">Comparar con <span data-benchmark-label>VOO</span></label></div><div id="live-underwater" class="chart empty">Aún no hay lecturas intradiarias.</div></details>
+<details class="chart-table"><summary>Estado de las cotizaciones y últimas lecturas</summary><div class="scroll"><table id="live-sources"><thead><tr><th>Fuente</th><th>Hora de cotización</th><th>Consultada</th><th>Estado</th></tr></thead><tbody></tbody></table></div><div class="scroll"><table id="live-records"><thead><tr><th>Fecha y hora · Perú</th><th>Retorno desde cierre</th><th><span data-benchmark-label>VOO</span></th><th>Diferencia (pp)</th></tr></thead><tbody></tbody></table></div></details>
+</section>
+<div class="daily-heading"><h2>Análisis de cierres diarios</h2><span class="small muted">Métricas y mapa mensual calculados con el historial diario.</span></div>
+
+<div class="cards">
+<section class="card kpi"><div class="label">Retorno total</div><div id="cum" class="value">—</div><div id="inception" class="metric-foot">Desde el primer registro</div><div class="comparison"><span><span data-benchmark-description>S&amp;P 500 (VOO)</span></span><strong id="benchmark">—</strong></div></section>
+<section class="card kpi"><div class="label">CAGR compuesto</div><div id="cagr" class="value">—</div><div class="metric-foot"><span id="cagr-badge" class="badge">Anualización estimada</span><span id="cagr-observed" hidden>Historial ≥ 1 año</span></div><div class="comparison"><span><span data-benchmark-description>S&amp;P 500 (VOO)</span></span><strong id="bcagr">—</strong></div></section>
+<section class="card kpi"><div class="label">Volatilidad anualizada</div><div id="vol" class="value">—</div><div class="metric-foot"><span id="vol-badge" class="badge">Estimación provisional</span><span id="vol-observed" hidden>Variabilidad de los retornos</span></div><div class="comparison"><span><span data-benchmark-description>S&amp;P 500 (VOO)</span></span><strong id="bvol">—</strong></div></section>
+<section class="card kpi"><div class="label">Sharpe ratio</div><div id="sharpe" class="value">—</div><div class="metric-foot"><span id="sharpe-badge" class="badge">Estimación provisional</span><span id="sharpe-observed" hidden>Retorno ajustado por riesgo</span></div><div class="comparison"><span><span data-benchmark-description>S&amp;P 500 (VOO)</span></span><strong id="bsharpe">—</strong></div></section>
+<section class="card kpi"><div class="label">Drawdown · máximo / actual</div><div class="value dd-value"><span id="maxdd">—</span><small class="muted">/</small><small id="dd">—</small></div><div class="metric-foot">Caída desde el máximo del historial</div><div class="comparison"><span><span data-benchmark-description>S&amp;P 500 (VOO)</span></span><strong id="bdd">—</strong></div></section>
+</div>
+<section class="card panel"><div class="panel-head"><div><h2>Equity curve</h2><p class="small muted">Retorno acumulado · Estrategia y <span data-benchmark-label>VOO</span> desde la misma fecha.</p></div><div class="ranges" aria-label="Período del gráfico"><button data-range="1D" aria-pressed="false">1D</button><button data-range="1W" aria-pressed="false">1S</button><button data-range="1M" aria-pressed="false">1M</button><button data-range="3M" aria-pressed="false">3M</button><button data-range="6M" aria-pressed="false">6M</button><button data-range="1Y" aria-pressed="false">1A</button><button data-range="2Y" aria-pressed="false">2A</button><button data-range="YTD" aria-pressed="false">YTD</button><button data-range="ALL" aria-pressed="true">TOTAL</button></div></div><div class="chart-meta"><div class="legend"><span><i class="swatch"></i>NScheelje Strategy</span><span id="benchmark-legend"><i class="swatch bench"></i><span data-benchmark-label>VOO</span></span></div><span id="range-note" class="muted">—</span></div><div id="performance" class="chart empty">Esperando historial.</div><div class="chart-hint"><span>Cursor o toque: datos · Arrastra con el ratón: ampliar un tramo · Teclado: ← →</span><button id="reset-zoom" hidden>Restablecer vista</button></div><details class="chart-table"><summary>Ver datos del gráfico</summary><div class="scroll"><table id="chart-table"><caption>Retornos desde la primera fecha mostrada. Diferencia = estrategia − <span data-benchmark-label>VOO</span>, en puntos porcentuales (pp).</caption><thead><tr><th scope="col">Fecha</th><th scope="col">Estrategia</th><th scope="col"><span data-benchmark-label>VOO</span></th><th scope="col">Diferencia (pp)</th></tr></thead><tbody></tbody></table></div></details></section>
+<details class="card panel"><summary>Rendimientos por período</summary><div class="detail-body"><div id="trailing" class="trailing"></div><p class="small muted">* Período parcial. N/D: el historial no cubre el período completo.</p></div></details>
+<section class="card panel"><h2>Rendimientos mensuales (%)</h2><p class="small muted">Mapa de rentabilidad por mes y acumulado del año.</p><div class="scroll"><table id="monthly" class="heatmap"><caption>* Período parcial. — Sin registros. N/D: falta la base del mes anterior.</caption><thead><tr><th scope="col">Año</th><th scope="col">Ene</th><th scope="col">Feb</th><th scope="col">Mar</th><th scope="col">Abr</th><th scope="col">May</th><th scope="col">Jun</th><th scope="col">Jul</th><th scope="col">Ago</th><th scope="col">Sep</th><th scope="col">Oct</th><th scope="col">Nov</th><th scope="col">Dic</th><th scope="col">Año / YTD</th></tr></thead><tbody></tbody></table></div><p class="monthly-note">Verde: retorno positivo · Rojo: retorno negativo. El signo y la cifra identifican cada resultado.</p></section>
+<section class="card panel"><div class="panel-head"><div><h2>Drawdown</h2><p class="small muted">Caída desde el máximo de cada serie; 0% indica un nuevo máximo.</p></div><label class="compare-toggle"><input id="compare-dd" type="checkbox">Comparar con <span data-benchmark-label>VOO</span></label></div><div class="chart-meta"><div class="legend"><span><i class="swatch dd"></i>NScheelje Strategy</span><span id="dd-benchmark-legend" hidden><i class="swatch bench"></i><span data-benchmark-label>VOO</span></span></div><span id="dd-note" class="muted">Máximos desde el inicio del historial</span></div><div id="underwater" class="chart empty">Esperando historial.</div><p class="chart-hint">Desplaza el cursor o toca la curva para consultar fecha y drawdown.</p><details class="chart-table"><summary>Ver datos del drawdown</summary><div class="scroll"><table id="drawdown-table"><caption>Porcentajes calculados desde el NAV, con cuatro decimales. El filtro conserva los máximos históricos.</caption><thead><tr><th scope="col">Fecha</th><th scope="col">Estrategia</th><th scope="col" id="dd-table-heading" hidden><span data-benchmark-label>VOO</span></th></tr></thead><tbody></tbody></table></div></details></section>
+<details class="card panel" id="advanced-panel"><summary>Métricas avanzadas</summary><div class="detail-body"><p id="advanced-note" class="advanced-context"></p><div class="scroll"><table id="advanced" class="advanced-table"><caption>Calculadas sobre todo el historial, salvo Calmar: ventana de hasta 36 meses. No cambian al ampliar la curva.</caption><thead><tr><th scope="col">Métrica</th><th scope="col">Estrategia</th><th scope="col"><span data-benchmark-label>VOO</span></th><th scope="col">Cómo interpretarla</th></tr></thead><tbody></tbody></table></div><p id="advanced-assumptions" class="small muted"></p><details class="chart-table"><summary>Fórmulas y supuestos</summary><ul class="small muted"><li>Calmar = CAGR / valor absoluto del drawdown máximo, ambos recalculados dentro de la misma ventana de hasta 36 meses. Con menos historial se usa el disponible; la fecha base es el último cierre en o antes del inicio objetivo. Si no hubo caída, el cociente no está definido.</li><li>Sortino anualizado = media de retornos diarios menos objetivo diario, dividida entre la desviación a la baja diaria, por raíz del factor anual. El objetivo diario se obtiene del objetivo anual compuesto. La desviación a la baja es la raíz de la media de min(retorno − objetivo, 0)² sobre TODOS los retornos, incluyendo ceros.</li><li>Omega = suma de los excesos positivos sobre el objetivo diario / valor absoluto de los excesos negativos. Es una medida empírica diaria y no se anualiza. Si no hay valores bajo el objetivo, se muestra N/D.</li><li>Ulcer index = raíz de la media de drawdowns al cuadrado, en puntos porcentuales, sobre todos los cierres del historial. Resume profundidad y persistencia de las caídas observadas; no se anualiza.</li><li>Beta = covarianza muestral entre retornos de estrategia y VOO / varianza muestral de VOO. Correlación = covarianza / producto de las desviaciones estándar; varía de −1 a +1. No miden rentabilidad superior por sí mismas.</li><li>Tracking error = desviación estándar muestral de (retorno diario de estrategia − retorno diario de VOO) × raíz del factor anual. Information ratio = media de esa diferencia / su desviación estándar × raíz del factor anual. Se comparan fechas idénticas; con benchmark incompleto se muestran N/D.</li><li>Sortino, Omega y las métricas relativas necesitan al menos dos retornos y frecuencia diaria compatible. N/D indica un cociente sin denominador, datos insuficientes o una serie incompatible; no se muestran infinitos. Los umbrales de historial son informativos y no certifican precisión.</li></ul></details></div></details>
+<details class="card panel" id="analysis-panel"><summary>Detalles de las métricas</summary><div class="detail-body"><p id="sample-note" class="small muted"></p><p id="annual-note" class="note warn"></p><p class="small muted">Los indicadores superiores corresponden a todo el historial y se actualizan con cada cierre. Volatilidad y Sharpe requieren al menos dos retornos y una frecuencia diaria compatible.</p></div></details>
+<details class="card panel"><summary>Últimos cierres</summary><div class="detail-body"><div class="scroll"><table id="recent"><caption>Variación diaria: cambio respecto al cierre anterior disponible.</caption><thead><tr><th scope="col">Fecha</th><th scope="col">Acumulado</th><th scope="col">Variación diaria</th><th scope="col">Drawdown</th><th scope="col">VOO acumulado</th></tr></thead><tbody></tbody></table></div></div></details>
+<details class="card panel"><summary>Metodología y fuente de datos</summary><div class="detail-body small muted"><ul><li>Todos los retornos se calculan desde un NAV positivo por participación, ajustado por aportes y retiros. La página no comprueba ese ajuste ni descuenta comisiones por su cuenta. Un saldo de cuenta sin ajustar no sirve como NAV de rentabilidad.</li><li>Retorno = NAV final / NAV inicial − 1. Drawdown = NAV / máximo observado − 1. El inicio del historial no necesariamente es el inicio real de la estrategia.</li><li>CAGR o tasa equivalente anual = (NAV final / NAV inicial)^(365,25 / días transcurridos) − 1. Antes de un año se identifica como estimación extrapolada, no como rendimiento anual obtenido ni pronóstico.</li><li>Volatilidad: desviación estándar muestral de retornos diarios × raíz del factor anual. Sharpe: media de retornos en exceso de la tasa libre de riesgo / desviación estándar × raíz del factor anual. La anualización supone un comportamiento diario comparable y ausencia de autocorrelación relevante; no garantiza estabilidad estadística.</li><li>Volatilidad y Sharpe se calculan desde dos retornos; se marcan provisionales con menos de 60. Ese umbral es informativo y no certifica fiabilidad. Si faltan fechas, las métricas pueden no estar disponibles.</li><li>Los rangos usan días, meses y años calendario, con el último cierre en o antes de la fecha objetivo. YTD usa el cierre del año anterior; sin esa base se marca parcial. Fechas interpretadas en UTC. La curva conecta los cierres disponibles con segmentos rectos; los datos del tooltip siempre corresponden a registros reales. Variación diaria compara con el cierre anterior disponible. Diferencia vs <span data-benchmark-label>VOO</span> resta los retornos acumulados desde la misma base y se expresa en puntos porcentuales (pp), no es alfa ajustado por riesgo. El drawdown de ambas series conserva los máximos de todo el historial y se muestra con cuatro decimales; no se estima el de VOO si su serie está incompleta.</li><li>VOO es el benchmark declarado del CSV. Moneda, dividendos, comisiones y origen deben validarse al generar la serie. No se inventan valores faltantes.</li><li>Registro SHA enlaza a los commits de GitHub para consultar cambios y sus hashes. No equivale a una auditoría independiente ni acredita los resultados financieros.</li></ul></div></details>
+<details class="card panel"><summary>Configuración de datos</summary><div class="detail-body"><div class="tools"><button id="reload">Actualizar</button><label class="file-label">Abrir CSV<input id="file" type="file" accept=".csv,text/csv" aria-label="Abrir CSV local"></label><button id="download" disabled>Descargar CSV</button><label for="frequency">Frecuencia</label><select id="frequency"><option value="252">Sesiones de mercado · 252/año</option><option value="365.25">Días calendario · 365,25/año</option></select><label for="rf">Tasa libre de riesgo anual (%)</label><input id="rf" type="number" value="0" min="0" max="100" step="0.1"><label for="mar">Objetivo anual Sortino / Omega (%)</label><input id="mar" type="number" value="0" min="-99" max="100" step="0.1"></div><p class="small muted">Carga automática: nav_history.csv en la misma carpeta. Columnas: date, nav y benchmark_nav (opcional). La tasa libre de riesgo es una suposición constante; no se obtiene automáticamente del mercado. El objetivo de Sortino / Omega es independiente de esa tasa y empieza en 0% anual.</p><div id="diagnostics" class="note"></div></div></details>
+<p class="disclosure">El retorno acumulado refleja el historial disponible. Las estimaciones anualizadas pueden cambiar significativamente con nuevos datos. Los resultados históricos no garantizan rendimientos futuros.</p>
+<noscript><p class="status error">Activa JavaScript para visualizar el historial.</p></noscript>
+</main><footer hidden><span>NScheelje Strategy</span><span>Historial de rendimiento · Datos calculados desde el NAV</span></footer>
+<script>var IntradayValidator = (() => {
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __export = (target, all) => {
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
+  };
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
+  };
+  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+  var stdin_exports = {};
+  __export(stdin_exports, {
+    parseDailyCSV: () => parseDailyCSV,
+    validateSnapshot: () => validateSnapshot
+  });
+  const positive = (value) => typeof value === "number" && Number.isFinite(value) && value > 0;
+  const utc = (value) => typeof value === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/.test(value) && Number.isFinite(Date.parse(value));
+  const day = (value) => typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(value + "T00:00:00Z")) && (/* @__PURE__ */ new Date(value + "T00:00:00Z")).toISOString().slice(0, 10) === value;
+  function validateSnapshot(raw, now = Date.now()) {
+    if (!raw || typeof raw !== "object") throw Error("Lectura inv\xE1lida.");
+    const x = raw, time = Date.parse(x.timestamp), partial = x.kind === "partial";
+    if (x.schema_version !== 1 || !utc(x.timestamp) || time > now + 12e4 || now - time > 36e5) throw Error("Fecha de lectura inv\xE1lida.");
+    if (!day(x.base_date) || Date.parse(x.base_date + "T00:00:00-05:00") > time) throw Error("Fecha base inv\xE1lida.");
+    if (![x.base_nav, x.base_benchmark_nav, x.benchmark_nav].every(positive) || (partial ? x.nav !== null : !positive(x.nav))) throw Error("NAV inv\xE1lido.");
+    if (!Array.isArray(x.sources) || x.sources.length < 1 || x.sources.length > 24 || new Set(x.sources.map((s) => s.ticker)).size !== x.sources.length || !x.sources.some((s) => s.ticker === "VOO")) throw Error("Fuentes inv\xE1lidas.");
+    for (const s of x.sources) {
+      if (typeof s.ticker !== "string" || !/^[-A-Z0-9.]{1,30}$/.test(s.ticker) || !utc(s.retrieved_at) || Date.parse(s.retrieved_at) > time + 12e4 || !["current", "closed", "unverified", "stale"].includes(s.status)) throw Error("Fuente inv\xE1lida.");
+      if (s.quote_time !== null && (!utc(s.quote_time) || Date.parse(s.quote_time) > time + 12e4)) throw Error("Hora inv\xE1lida.");
+      if (s.status !== "unverified" && s.quote_time === null) throw Error("Falta hora verificable.");
+      if (s.status === "current" && time - Date.parse(s.quote_time) > 40 * 6e4) throw Error("Cotizaci\xF3n antigua.");
+      if (s.status === "stale" && time - Date.parse(s.quote_time) > 75 * 6e4) throw Error("Cotizaci\xF3n antigua.");
+    }
+    if (x.qqq_nav != null && (!positive(x.qqq_nav) || !positive(x.base_qqq_nav) || !x.sources.some((s) => s.ticker === "QQQ"))) throw Error("Comparaci\xF3n inv\xE1lida.");
+    if (x.qqq_nav == null && x.base_qqq_nav != null) throw Error("Comparaci\xF3n incompleta.");
+    if (!Array.isArray(x.warnings) || x.warnings.length > 12 || x.warnings.some((v) => typeof v !== "string" || v.length > 400)) throw Error("Avisos inv\xE1lidos.");
+    if (!Array.isArray(x.daily_history) || !x.daily_history.length || x.daily_history.length > 12e3) throw Error("Historial inv\xE1lido.");
+    let previous = "";
+    for (const row of x.daily_history) {
+      if (!day(row.date) || row.date <= previous || !positive(row.nav) || row.benchmark_nav !== null && !positive(row.benchmark_nav) || row.qqq_nav != null && !positive(row.qqq_nav)) throw Error("Cierre inv\xE1lido.");
+      previous = row.date;
+    }
+    const last = x.daily_history.at(-1);
+    if (last.date !== x.base_date || Math.abs(last.nav - x.base_nav) > 1e-4 || last.benchmark_nav === null || Math.abs(last.benchmark_nav - x.base_benchmark_nav) > 1e-4 || x.qqq_nav != null && (last.qqq_nav == null || Math.abs(last.qqq_nav - x.base_qqq_nav) > 1e-4)) throw Error("Base inconsistente.");
+    return x;
+  }
+  function parseDailyCSV(text, today) {
+    const rows = text.replace(/^\uFEFF/, "").trim().split(/\r?\n/).map((row) => row.split(",")), headers = rows.shift()?.map((s) => s.trim()) ?? [];
+    const date = headers.indexOf("date"), nav = headers.indexOf("nav"), benchmark = headers.indexOf("benchmark_nav"), seen = /* @__PURE__ */ new Set();
+    if (date < 0 || nav < 0) throw Error("Historial no reconocido.");
+    return rows.filter((row) => row.some((v) => v.trim())).map((row) => {
+      const d = row[date], value = Number(row[nav]), comparison = benchmark >= 0 && row[benchmark]?.trim() ? Number(row[benchmark]) : null;
+      if (!day(d) || d > today || seen.has(d) || !positive(value) || comparison !== null && !positive(comparison)) throw Error("Cierre inv\xE1lido.");
+      seen.add(d);
+      return { date: d, nav: value, benchmark_nav: comparison };
+    }).sort((a, b) => a.date.localeCompare(b.date));
+  }
+  return __toCommonJS(stdin_exports);
+})();
+
+(function(){
+  const feed='https://raw.githubusercontent.com/Stronghand42/portfolio-data/main/intraday/';
+  const bytes=value=>Uint8Array.from(atob(value),c=>c.charCodeAt(0));
+  const encoder=new TextEncoder(),decoder=new TextDecoder();
+  const privateOrigin='https://nscheelje-intraday.deeplemon17.chatgpt.site',accessStorage='nscheelje/intraday/access-v1';
+  let readerKey=null,unlockResolve,flight=null,cache=null,cachedAt=0;
+  let personalAccess=null;
+  const sessionDatabase='nscheelje-personal-access',sessionDays=90;
+  function sessionStore(operation,value){return new Promise((resolve,reject)=>{
+    if(typeof indexedDB==='undefined'){reject(Error('El navegador no permite recordar el acceso.'));return;}
+    const request=indexedDB.open(sessionDatabase,1);
+    request.onupgradeneeded=()=>request.result.createObjectStore('sessions');
+    request.onerror=()=>reject(Error('No se pudo abrir el acceso guardado.'));
+    request.onsuccess=()=>{
+      const db=request.result,transaction=db.transaction('sessions',operation==='get'?'readonly':'readwrite'),store=transaction.objectStore('sessions');
+      let result;
+      const action=operation==='get'?store.get('reader'):operation==='delete'?store.delete('reader'):store.put(value,'reader');
+      action.onsuccess=()=>{result=action.result;};
+      transaction.oncomplete=()=>{db.close();resolve(result);};
+      transaction.onerror=transaction.onabort=()=>{db.close();reject(Error('No se pudo guardar el acceso.'));};
+    };
+  });}
+  const accessMessage=()=>document.getElementById('pages-access-message');
+  function acceptPersonalAccess(box){
+    if(box.version!==1||box.kdf!=='PBKDF2-SHA256'||box.iterations!==100000||typeof box.ciphertext!=='string'||box.ciphertext.length>16000||typeof box.salt!=='string'||typeof box.nonce!=='string')throw Error('Archivo de acceso inválido.');
+    personalAccess=box;
+    try{localStorage.setItem(accessStorage,JSON.stringify(box));accessMessage().textContent='Este dispositivo está configurado. Introduce tu clave para abrir el monitor.';}catch{accessMessage().textContent='Archivo de acceso cargado. Tu navegador no permite recordarlo; conserva una copia.';}
+  }
+  try{const savedAccess=localStorage.getItem(accessStorage);if(savedAccess)acceptPersonalAccess(JSON.parse(savedAccess));}catch{}
+  window.addEventListener('message',event=>{
+    if(event.origin!==privateOrigin||event.data?.type!=='nscheelje-personal-access')return;
+    try{acceptPersonalAccess(event.data.envelope);event.source?.postMessage({type:'nscheelje-access-received'},privateOrigin);}catch{accessMessage().textContent='El archivo recibido no es válido.';}
+  });
+  window.opener?.postMessage({type:'nscheelje-access-ready'},privateOrigin);
+  document.getElementById('pages-access-file').onchange=async event=>{
+    try{const file=event.target.files?.[0];if(!file)return;if(file.size>18000)throw Error('Archivo demasiado grande.');acceptPersonalAccess(JSON.parse(await file.text()));}catch{accessMessage().textContent='No se pudo leer el archivo de acceso. Usa la copia que descargaste de tu página privada.';}
+  };
+  const ready=new Promise(resolve=>{unlockResolve=resolve;}),saved=new Map();
+  function revealMonitor(){
+    document.getElementById('pages-access').hidden=true;document.getElementById('main').hidden=false;document.querySelector('footer').hidden=false;document.getElementById('pages-lock').hidden=false;
+    unlockResolve();document.getElementById('live-title').focus();
+  }
+  const restoreSession=(async()=>{
+    try{
+      const session=await sessionStore('get');
+      if(!session)return;
+      const key=session.key;
+      if(session.expires<=Date.now()||!key||key.type!=='private'||key.extractable!==false||key.algorithm?.name!=='RSA-OAEP'||!key.usages?.includes('decrypt')){await sessionStore('delete');return;}
+      readerKey=key;revealMonitor();
+    }catch{ /* A private window can still use the normal access form. */ }
+  })();
+  async function fetchJSON(url,max=3_000_000){
+    const response=await fetch(url,{cache:'no-store',signal:AbortSignal.timeout(20000)});
+    if(!response.ok)throw Error('No se pudo consultar el archivo de datos.');
+    const text=await response.text();if(text.length>max)throw Error('Archivo de datos demasiado grande.');
+    return JSON.parse(text);
+  }
+  async function openAccess(password,box){
+    if(box.version!==1||box.kdf!=='PBKDF2-SHA256'||box.iterations!==100000||typeof box.ciphertext!=='string'||box.ciphertext.length>16000)throw Error('Acceso cifrado inválido.');
+    const salt=bytes(box.salt),nonce=bytes(box.nonce);if(salt.length!==16||nonce.length!==12)throw Error('Acceso cifrado inválido.');
+    const material=await crypto.subtle.importKey('raw',encoder.encode(password),'PBKDF2',false,['deriveKey']);
+    const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:box.iterations,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['decrypt']);
+    const privateBytes=new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM',iv:nonce,additionalData:encoder.encode('nscheelje-intraday/access/v1')},key,bytes(box.ciphertext)));
+    try{return await crypto.subtle.importKey('pkcs8',privateBytes,{name:'RSA-OAEP',hash:'SHA-256'},false,['decrypt']);}finally{privateBytes.fill(0);}
+  }
+  async function decryptReading(box){
+    if(box.version!==1||typeof box.encrypted_key!=='string'||typeof box.nonce!=='string'||typeof box.ciphertext!=='string'||box.ciphertext.length>3_000_000)throw Error('Lectura cifrada inválida.');
+    const raw=new Uint8Array(await crypto.subtle.decrypt({name:'RSA-OAEP'},readerKey,bytes(box.encrypted_key)));
+    let key;try{key=await crypto.subtle.importKey('raw',raw,'AES-GCM',false,['decrypt']);}finally{raw.fill(0);}
+    const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:bytes(box.nonce),additionalData:encoder.encode('nscheelje-intraday/v1')},key,bytes(box.ciphertext));
+    return JSON.parse(decoder.decode(plain));
+  }
+  async function readDashboard(){
+    const stamp='?at='+Math.floor(Date.now()/45000),notes=[];
+    const dailyURL='https://raw.githubusercontent.com/Stronghand42/portfolio-data/main/nav_history.csv';
+    const response=await fetch(dailyURL+stamp,{cache:'no-store',signal:AbortSignal.timeout(20000)});
+    if(!response.ok)throw Error('No se pudo cargar el historial EOD.');
+    const text=await response.text();if(text.length>2_000_000)throw Error('Historial EOD demasiado grande.');
+    let daily=IntradayValidator.parseDailyCSV(text,portfolioDay(Date.now())),health=null;
+    try{
+      const manifest=await fetchJSON(feed+'manifest.json'+stamp,1_000_000),now=Date.now();
+      if(manifest.version!==1||!Array.isArray(manifest.entries)||manifest.entries.length>12000)throw Error('Índice de lecturas inválido.');
+      const paths=new Set();
+      const entries=manifest.entries.map(entry=>{
+        if(typeof entry.path!=='string'||!/^\d{4}-\d{2}-\d{2}\/\d{2}-\d{2}\.json$/.test(entry.path)||typeof entry.timestamp!=='string'||!Number.isFinite(Date.parse(entry.timestamp))||Date.parse(entry.timestamp)>now+120000||paths.has(entry.path))throw Error('Índice de lecturas inválido.');
+        paths.add(entry.path);return entry;
+      }).sort((a,b)=>Date.parse(a.timestamp)-Date.parse(b.timestamp));
+      const lastDate=daily.at(-1)?.date??'',wanted=entries.filter((entry,index)=>portfolioDay(entry.timestamp)>lastDate||index>=entries.length-16);
+      const pending=wanted.filter(entry=>saved.get(entry.path)?.timestamp!==entry.timestamp);
+      for(let i=0;i<pending.length;i+=6){
+        await Promise.all(pending.slice(i,i+6).map(async entry=>{
+          const payload=await decryptReading(await fetchJSON(feed+entry.path+stamp));
+          if(payload.timestamp!==entry.timestamp)throw Error('La fecha de una lectura no coincide con su índice.');
+          if(payload.kind==='error'){
+            if(typeof payload.error!=='string'||payload.error.length>400)throw Error('Aviso de actualización inválido.');
+            saved.set(entry.path,{timestamp:entry.timestamp,payload});
+          }else saved.set(entry.path,{timestamp:entry.timestamp,payload:IntradayValidator.validateSnapshot(payload,Date.parse(entry.timestamp))});
+        }));
+      }
+      for(const path of saved.keys())if(!wanted.some(entry=>entry.path===path))saved.delete(path);
+      const readings=wanted.map(entry=>saved.get(entry.path)?.payload).filter(Boolean).sort((a,b)=>Date.parse(a.timestamp)-Date.parse(b.timestamp));
+      const valid=readings.filter(row=>row.kind!=='error'),last=readings.at(-1),success=valid.at(-1);
+      if(success){
+        const history=new Map(success.daily_history.map(row=>[row.date,row]));
+        daily=daily.map(row=>{const prior=history.get(row.date);return {...row,qqq_nav:prior&&Math.abs(prior.nav-row.nav)<.0001?(prior.qqq_nav??null):null};});
+      }
+      if(last)health={last_attempt:last.timestamp,last_success:success?.timestamp??null,error:last.kind==='error'?last.error:last.kind==='partial'?(last.warnings[0]??'Lectura incompleta.'):null,partial:last.kind==='partial'};
+      return {daily,points:valid.map(({daily_history,...row})=>row),health,notes,server_time:new Date().toISOString()};
+    }catch{notes.push('No se pudo cargar la última lectura intradiaria. Se conserva el historial EOD.');return {daily,points:cache?.points??[],health:cache?.health??health,notes,server_time:new Date().toISOString()};}
+  }
+  window.pagesDashboardData=async function(force=false){
+    await ready;if(flight)return flight;
+    if(!force&&cache&&Date.now()-cachedAt<30000)return cache;
+    flight=readDashboard();try{cache=await flight;cachedAt=Date.now();return cache;}finally{flight=null;}
+  };
+  document.getElementById('pages-access-form').onsubmit=async event=>{
+    event.preventDefault();const input=document.getElementById('pages-password'),button=document.getElementById('pages-unlock'),message=document.getElementById('pages-access-message');
+    button.disabled=true;message.textContent='Abriendo tus datos cifrados…';
+    try{
+      await restoreSession;
+      if(!personalAccess){message.textContent='Configura este dispositivo desde tu página privada o carga tu archivo de acceso.';return;}
+      readerKey=await openAccess(input.value.trim(),personalAccess);input.value='';
+      if(document.getElementById('pages-remember').checked){
+        try{await sessionStore('put',{key:readerKey,expires:Date.now()+sessionDays*86400000});}
+        catch{accessMessage().textContent='El navegador no permite recordar el acceso. Podrás abrir el monitor en esta pestaña.';}
+      }else await sessionStore('delete').catch(()=>{});
+      revealMonitor();
+    }catch{message.textContent='No se pudo abrir el monitor. Comprueba la clave y tu conexión.';input.focus();}
+    finally{button.disabled=false;}
+  };
+  document.getElementById('pages-lock').onclick=async()=>{await sessionStore('delete').catch(()=>{});readerKey=null;saved.clear();cache=null;location.reload();};
+})();
+
+
+'use strict';
+
+let dashboardFlight = null, dashboardCache = null, dashboardCachedAt = 0;
+let selectedBenchmark="VOO";
+function benchmarkNav(row){return selectedBenchmark==='QQQ'?(row.qqq_nav??null):row.benchmark_nav;}
+function benchmarkBase(row){return selectedBenchmark==='QQQ'?(row.base_qqq_nav??null):row.base_benchmark_nav;}
+function intradayDifference(a,b){return Number.isFinite(a)&&Number.isFinite(b)?a-b:null;}
+function portfolioDay(time){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Lima',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(time));}
+function portfolioCurve(daily,readings,comparison=selectedBenchmark){
+  const value=row=>comparison==='QQQ'?(row.qqq_nav??null):row.benchmark_nav;
+  const lastClose=daily.at(-1)?.date??'';
+  // EOD records have a date, not an exact quote time. This coordinate is used
+  // only to position them on the chart; their tooltip deliberately shows no hour.
+  const closes=daily.map(row=>({...row,day:row.date,kind:'eod',timestamp:null,time:Date.parse(row.date+'T00:00:00-05:00'),comparison:value(row),sources:[]}));
+  const tail=readings.filter(row=>portfolioDay(row.timestamp)>lastClose).map(row=>({...row,day:portfolioDay(row.timestamp),time:Date.parse(row.timestamp),comparison:value(row)})).sort((a,b)=>a.time-b.time);
+  let peak=0,benchmarkPeak=0;
+  return [...closes,...tail].map(row=>{if(Number.isFinite(row.nav))peak=Math.max(peak,row.nav);if(Number.isFinite(row.comparison))benchmarkPeak=Math.max(benchmarkPeak,row.comparison);return {...row,dd:Number.isFinite(row.nav)&&peak>0?(row.nav/peak-1)*100:null,benchDD:Number.isFinite(row.comparison)&&benchmarkPeak>0?(row.comparison/benchmarkPeak-1)*100:null};});
+}
+async function dashboardData(force = false) {
+  if(typeof window!=='undefined'&&typeof window.pagesDashboardData==='function')return window.pagesDashboardData(force);
+  if (force) dashboardCachedAt = 0;
+  if (dashboardFlight) return dashboardFlight;
+  if (dashboardCache && Date.now() - dashboardCachedAt < 30000) return dashboardCache;
+  dashboardFlight = (async () => {
+    const response = await fetch('/api/dashboard', { cache: 'no-store', signal: AbortSignal.timeout(20000) });
+    if (!response.ok || !(response.headers.get('content-type') || '').includes('application/json')) throw Error('No se pudo consultar el monitor. Comprueba tu sesión.');
+    const payload = await response.json();
+    dashboardCache = payload; dashboardCachedAt = Date.now(); return payload;
+  })();
+  try { return await dashboardFlight; } finally { dashboardFlight = null; }
+}
+
+if (typeof document !== 'undefined') {
+  const live = id => document.getElementById(id);
+  const limaDate = time => new Intl.DateTimeFormat('en-CA',{timeZone:'America/Lima',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(time));
+  const limaTime = time => time ? new Intl.DateTimeFormat('es-PE',{timeZone:'America/Lima',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(time)) : 'Sin hora verificable';
+  const pct = v => Number.isFinite(v) ? (v>0?'+':'')+v.toFixed(2)+'%' : 'N/D';
+  const pp = v => Number.isFinite(v) ? (v>0?'+':'')+v.toFixed(2)+' pp' : 'N/D';
+  const ink = v => v>0?'positive':v<0?'negative':'neutral';
+  const rel = (v,b) => Number.isFinite(v) && Number.isFinite(b) && b>0 ? (v/b-1)*100 : null;
+  let livePayload = null, liveRange = 'ALL', liveTimer, liveBusy = false;
+
+  function updateNumber(id,value,formatter=pct){live(id).textContent=formatter(value);live(id).className=ink(value);}
+  function liveRows(id,rows){const body=live(id).querySelector('tbody');body.replaceChildren();rows.forEach(values=>{const tr=document.createElement('tr');values.forEach(v=>{const td=document.createElement('td');td.textContent=v?.text??v;td.className=v?.cls??'';tr.append(td);});body.append(tr);});}
+  function intradayPoints() {
+    if(!livePayload) return [];
+    const daily=livePayload.daily, points=livePayload.points;
+    let peak=0,benchPeak=0,index=0;
+    return points.map(point=>{
+      const day=limaDate(point.timestamp);
+      while(index<daily.length&&daily[index].date<day){peak=Math.max(peak,daily[index].nav);benchPeak=Math.max(benchPeak,benchmarkNav(daily[index])??0);index++;}
+      const comparison=benchmarkNav(point);peak=Math.max(peak,point.nav);benchPeak=Math.max(benchPeak,comparison??0);
+      return {...point,comparison,time:Date.parse(point.timestamp),dd:rel(point.nav,peak),benchDD:rel(comparison,benchPeak)};
+    });
+  }
+  function mappedPoints(){return livePayload?portfolioCurve(livePayload.daily,livePayload.points):[];}
+  function visiblePoints(points) {
+    const today=limaDate(Date.now());
+    if(liveRange==='1D') return points.filter(p=>p.day===today);
+    if(liveRange==='1W') return points.filter(p=>p.time>=Date.now()-7*86400000);
+    return points;
+  }
+  function baseFor(points) {
+    if(!points.length) return null;
+    if(liveRange==='ALL')return {nav:points[0].nav,comparison:points[0].comparison,date:points[0].day};
+    const day=points[0].day, prior=livePayload.daily.filter(d=>d.date<day).at(-1);
+    return prior ? {...prior,comparison:benchmarkNav(prior)} : {date:points[0].day,nav:points[0].base_nav??points[0].nav,comparison:benchmarkBase(points[0])??points[0].comparison};
+  }
+  function node(tag,attrs={},text) {const n=document.createElementNS('http://www.w3.org/2000/svg',tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,String(v)));if(text!==undefined)n.textContent=text;return n;}
+  function plot(id,points,base,drawdown=false) {
+    const host=live(id);host.replaceChildren();host.classList.remove('empty');
+    if(!points.length){host.classList.add('empty');host.textContent=liveRange==='1D'?'Aún no hay lecturas de hoy.':'Aún no hay lecturas en este tramo.';return;}
+    const width=host.getBoundingClientRect().width;if(width<10)return;
+    const w=Math.max(240,width),h=drawdown?185:width<560?250:290,p={l:8,r:61,t:20,b:32},compare=!drawdown||live('live-compare-dd').checked;
+    const series=[points.map(d=>drawdown?d.dd:rel(d.nav,base.nav)),...(compare?[points.map(d=>drawdown?d.benchDD:rel(d.comparison,base.comparison))]:[])];
+    const values=series.flat().filter(Number.isFinite);let low=Math.min(0,...values),high=drawdown?0:Math.max(0,...values);if(low===high){low-=.2;if(!drawdown)high+=.2;}const padding=(high-low)*.13;low-=padding;if(!drawdown)high+=padding;
+    const span=points.at(-1).time-points[0].time,x=i=>p.l+(span?(points[i].time-points[0].time)/span:.5)*(w-p.l-p.r),y=v=>p.t+(high-v)/(high-low)*(h-p.t-p.b);
+    const svg=node('svg',{viewBox:`0 0 ${w} ${h}`,role:'img','aria-label':drawdown?'Drawdown del historial EOD e intradiario':'Curva de capital desde el primer cierre EOD, seguida de lecturas intradiarias'});svg.style.height=h+'px';host.append(svg);
+    for(let j=0;j<5;j++){const v=low+(high-low)*j/4;svg.append(node('line',{x1:p.l,x2:w-p.r,y1:y(v),y2:y(v),stroke:'#edf0f4'}),node('text',{x:w-p.r+8,y:y(v)+3,fill:'#8792a2','font-size':10},v.toFixed(2)+'%'));}
+    svg.append(node('line',{x1:p.l,x2:w-p.r,y1:y(0),y2:y(0),stroke:'#bcc6d1','stroke-dasharray':'3 4'}));
+    const ticks=Math.min(width<560?3:5,points.length);for(let j=0;j<ticks;j++){const i=Math.round(j*(points.length-1)/Math.max(1,ticks-1)),options=liveRange==='1D'&&points[i].kind!=='eod'?{hour:'2-digit',minute:'2-digit',hourCycle:'h23'}:{day:'2-digit',month:'2-digit'},label=new Intl.DateTimeFormat('es-PE',{timeZone:'America/Lima',...options}).format(new Date(points[i].time));svg.append(node('text',{x:x(i),y:h-9,fill:'#677486','font-size':10,'text-anchor':j===0?'start':j===ticks-1?'end':'middle'},label));}
+    const colors=[drawdown?'#ba4c5a':'#008fa8','#8792a2'];series.forEach((values,k)=>{
+      let segment=[];const add=()=>{if(!segment.length)return;svg.append(node('path',{d:linePath(segment),fill:'none',stroke:colors[k],'stroke-width':k?1.3:1.9,'stroke-dasharray':k?'5 4':'none','stroke-linecap':'round'}));if(segment.length===1)svg.append(node('circle',{cx:segment[0][0],cy:segment[0][1],r:3,fill:colors[k]}));segment=[];};
+      values.forEach((value,i)=>{if(value===null)add();else segment.push([x(i),y(value)]);});add();
+    });
+    const guide=node('line',{y1:p.t,y2:h-p.b,stroke:'#aab7c5','stroke-dasharray':'3 4',visibility:'hidden'});svg.append(guide);
+    const dots=series.map((_,k)=>{const d=node('circle',{r:4,fill:colors[k],stroke:'white','stroke-width':2,visibility:'hidden'});svg.append(d);return d;});
+    const tooltip=document.createElement('div');tooltip.className='tooltip';tooltip.hidden=true;host.append(tooltip);let cursor=points.length-1;
+    function show(i){cursor=i;tooltip.replaceChildren();const title=document.createElement('div');title.className='tooltip-title';title.textContent=points[i].kind==='eod'?points[i].day+' · Cierre EOD':limaTime(points[i].timestamp)+' · Intradiario';tooltip.append(title);const values=drawdown?[['Estrategia',series[0][i]],...(compare?[[""+selectedBenchmark+"",series[1][i]]]:[])]:[['Estrategia',series[0][i]],[""+selectedBenchmark+"",series[1][i]],["Diferencia vs "+selectedBenchmark+"",Number.isFinite(series[0][i])&&Number.isFinite(series[1][i])?series[0][i]-series[1][i]:null]];values.forEach(([label,value])=>{const r=document.createElement('div'),name=document.createElement('span'),output=document.createElement('strong');r.className='tooltip-row';name.textContent=label;output.textContent=drawdown&&Number.isFinite(value)?value.toFixed(4)+'%':label==="Diferencia vs "+selectedBenchmark+""?pp(value):pct(value);output.className=ink(value);r.append(name,output);tooltip.append(r);});if(points[i].sources.some(s=>['unverified','stale'].includes(s.status))){const n=document.createElement('div');n.className='small muted';n.textContent=points[i].sources.some(s=>s.status==='unverified')?'Estimación · fuente sin hora verificable':'Estimación · cotización antigua';tooltip.append(n);}tooltip.hidden=false;guide.setAttribute('x1',x(i));guide.setAttribute('x2',x(i));guide.setAttribute('visibility','visible');dots.forEach((d,k)=>{const value=series[k][i];d.setAttribute('visibility',Number.isFinite(value)?'visible':'hidden');if(Number.isFinite(value)){d.setAttribute('cx',x(i));d.setAttribute('cy',y(value));}});const tw=tooltip.offsetWidth||235;tooltip.style.left=Math.max(8,Math.min(w-tw-8,x(i)+tw+16>w?x(i)-tw-16:x(i)+16))+'px';tooltip.style.top='16px';}
+    function hide(){tooltip.hidden=true;guide.setAttribute('visibility','hidden');dots.forEach(d=>d.setAttribute('visibility','hidden'));}
+    svg.onpointermove=e=>{const box=svg.getBoundingClientRect(),pos=(e.clientX-box.left)/box.width*w;let lo=0,hi=points.length-1;while(lo<hi){const mid=Math.floor((lo+hi)/2);if(x(mid)<pos)lo=mid+1;else hi=mid;}show(lo>0&&Math.abs(x(lo-1)-pos)<Math.abs(x(lo)-pos)?lo-1:lo);};svg.onpointerdown=svg.onpointermove;host.onpointerleave=hide;host.tabIndex=0;host.onfocus=()=>show(cursor);host.onblur=hide;host.onkeydown=e=>{if(e.key==='Escape')hide();else if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();show(e.key==='Home'?0:e.key==='End'?points.length-1:Math.max(0,Math.min(points.length-1,cursor+(e.key==='ArrowRight'?1:-1))));}};
+  }
+  function drawLive(){const all=mappedPoints(),selected=visiblePoints(all),base=baseFor(selected);live('live-history-note').textContent=livePayload?.daily.length?livePayload.daily.length+' cierres EOD desde '+livePayload.daily[0].date+' · '+all.filter(p=>p.kind!=='eod').length+' lecturas posteriores al último cierre':'Esperando historial EOD';plot('live-equity',selected,base);if(live('live-underwater').closest('details').open)plot('live-underwater',selected,base,true);document.querySelectorAll('[data-live-range]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.liveRange===liveRange)));}
+  function renderLive(){
+    const all=intradayPoints(),last=all.at(-1),health=livePayload.health;
+    let message;
+    if(!last){message=health?.error?'El actualizador intentó ejecutarse, pero no pudo guardar una lectura: '+health.error:'La página está lista. Falta conectar el actualizador al repositorio privado para recibir cotizaciones cada 15 minutos.';live('live-state').textContent='Sin lecturas';live('live-state').className='live-state warn';}
+    else{
+      const a=rel(last.nav,last.base_nav),b=rel(last.comparison,benchmarkBase(last)),unverified=last.kind==='partial'||last.sources.some(s=>['unverified','stale'].includes(s.status)),old=Date.now()-last.time>40*60000;
+      updateNumber('live-return',a);updateNumber('live-benchmark',b);updateNumber('live-difference',intradayDifference(a,b),pp);updateNumber('live-dd',last.dd);
+      live('live-baseline').textContent='Última lectura: '+limaTime(last.timestamp)+' · Base: cierre '+last.base_date;
+      live('live-state').textContent=old?'Lectura antigua':last.kind==='partial'?'Datos incompletos':unverified?'Estimación':'Lectura recibida';live('live-state').className='live-state '+(old||unverified?'warn':'ok');
+      message=health?.error?(health.partial?'Última lectura incompleta: '+health.error:'Último intento sin éxito: '+health.error+'. Se conserva la última lectura válida.'):old?'La última lectura tiene más de 40 minutos. Comprueba el actualizador antes de interpretarla como actual.':last.warnings.length?last.warnings.join(' '):'Cada lectura se calcula desde el cierre base. Los aportes y retiros no se incluyen como rentabilidad.';
+      if(selectedBenchmark==='QQQ'&&last.qqq_nav==null)message+=' QQQ todavía no está disponible en esta lectura.';
+      liveRows('live-sources',last.sources.map(s=>[s.ticker,limaTime(s.quote_time),limaTime(s.retrieved_at),s.status==='current'?'Hora validada':s.status==='closed'?'Mercado cerrado':s.status==='stale'?'Cotización antigua':'Hora no verificable']));
+      liveRows('live-records',all.slice(-16).reverse().map(s=>{const a=rel(s.nav,s.base_nav),b=rel(s.comparison,benchmarkBase(s)),delta=intradayDifference(a,b);return[limaTime(s.timestamp),{text:pct(a),cls:ink(a)},{text:pct(b),cls:ink(b)},{text:pp(delta),cls:ink(delta)}];}));
+    }
+    if(livePayload.notes.length)message+=' '+livePayload.notes.join(' ');
+    live('live-message').textContent=message;live('live-message').className='note'+(!last||health?.error||last.sources.some(s=>['unverified','stale'].includes(s.status))?' warn':'');drawLive();
+  }
+  async function refreshLive(force=false){if(liveBusy)return;liveBusy=true;live('live-refresh').disabled=true;try{livePayload=await dashboardData(force);renderLive();window.dispatchEvent(new Event('intraday-daily-loaded'));}catch(e){live('live-message').textContent=e.message+(livePayload?' Se conserva la última lectura válida.':'');live('live-message').className='note warn';}finally{liveBusy=false;live('live-refresh').disabled=false;clearTimeout(liveTimer);liveTimer=setTimeout(()=>refreshLive(true),900000);}}
+  live('live-refresh').onclick=()=>refreshLive(true);document.querySelectorAll('[data-live-range]').forEach(b=>b.onclick=()=>{liveRange=b.dataset.liveRange;drawLive();});live('live-compare-dd').onchange=drawLive;live('live-underwater').closest('details').ontoggle=drawLive;
+  live('benchmark-choice').onchange=()=>{selectedBenchmark=live('benchmark-choice').value;document.querySelectorAll('[data-benchmark-label]').forEach(n=>n.textContent=selectedBenchmark);document.querySelectorAll('[data-benchmark-description]').forEach(n=>n.textContent=selectedBenchmark==='QQQ'?'Nasdaq-100 (QQQ)':"S&P 500 ("+selectedBenchmark+")");if(livePayload)renderLive();window.dispatchEvent(new Event('benchmark-changed'));};
+  let liveResize;new ResizeObserver(()=>{clearTimeout(liveResize);liveResize=setTimeout(drawLive,100);}).observe(live('live-equity'));
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshLive(true);});refreshLive();
+}
+
+const DAY=86400000;
+function parseCSV(text){
+ const rows=[];let row=[],field='',quoted=false,closed=false;
+ text=text.replace(/^\uFEFF/,'');
+ for(let i=0;i<text.length;i++){const c=text[i];if(quoted){if(c==='"'){if(text[i+1]==='"'){field+='"';i++;}else{quoted=false;closed=true;}}else field+=c;continue;}
+ if(c==='"'){if(field.trim()||closed)throw Error('CSV: comillas mal colocadas.');field='';quoted=true;}
+ else if(c===','||c==='\n'||c==='\r'){row.push(field.trim());field='';closed=false;if(c!==','){if(c==='\r'&&text[i+1]==='\n')i++;if(row.some(v=>v!==''))rows.push(row);row=[];}}
+ else{if(closed&&!/\s/.test(c))throw Error('CSV: contenido después de comillas.');field+=c;}}
+ if(quoted)throw Error('CSV: falta cerrar un campo entre comillas.');row.push(field.trim());if(row.some(v=>v!==''))rows.push(row);return rows;
+}
+function dateTime(s){if(!/^\d{4}-\d{2}-\d{2}$/.test(s))throw Error('Fecha inválida: '+s);const t=Date.parse(s+'T00:00:00Z');if(!Number.isFinite(t)||new Date(t).toISOString().slice(0,10)!==s)throw Error('Fecha inexistente: '+s);return t;}
+function number(s,name,line,optional=false){if(optional&&(s===undefined||s===''))return null;if(s===undefined||s===''||!/^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[-+]?\d+)?$/i.test(s)||!Number.isFinite(Number(s)))throw Error(`Registro ${line}: ${name} debe ser un número finito.`);return Number(s);}
+function validateCSV(text){const rows=parseCSV(text);if(rows.length>25001)throw Error('El historial excede 25.000 registros; reduce el archivo para esta vista.');if(rows.length<3)throw Error('Se necesitan una cabecera y al menos dos registros.');const headers=rows.shift();const allowed=['date','nav','daily_return_pct','cum_ret_pct','drawdown_pct','benchmark_nav','benchmark_cum_ret_pct'];if(headers.some(h=>!allowed.includes(h)))throw Error('El CSV contiene columnas no admitidas. Utiliza solo la serie agregada pública.');if(new Set(headers).size!==headers.length)throw Error('Columnas duplicadas.');for(const k of ['date','nav'])if(!headers.includes(k))throw Error('Falta la columna '+k+'.');const warnings=[];const seen=new Set();let data=rows.map((r,i)=>{if(r.length!==headers.length)throw Error(`Registro ${i+1}: cantidad de campos incorrecta.`);const raw=Object.fromEntries(headers.map((h,j)=>[h,r[j]]));const time=dateTime(raw.date);if(seen.has(raw.date))throw Error('Fecha duplicada: '+raw.date+'. Corrige el origen.');seen.add(raw.date);const nav=number(raw.nav,'nav',i+1);const bench=number(raw.benchmark_nav,'benchmark_nav',i+1,true);if(nav<=0||(bench!==null&&bench<=0))throw Error(`Registro ${i+1}: el NAV debe ser positivo.`);const supplied={};for(const k of ['daily_return_pct','cum_ret_pct','drawdown_pct','benchmark_cum_ret_pct'])supplied[k]=number(raw[k],k,i+1,true);return {date:raw.date,time,nav,bench,supplied};});
+ if(data.some((d,i)=>i&&d.time<data[i-1].time))warnings.push('Se ordenaron las fechas cronológicamente.');data.sort((a,b)=>a.time-b.time);let peak=data[0].nav;let disagreements=0;const comparable=data[0].supplied.cum_ret_pct!==null&&Math.abs(data[0].supplied.cum_ret_pct)<.03;const comparableBench=data[0].supplied.benchmark_cum_ret_pct!==null&&Math.abs(data[0].supplied.benchmark_cum_ret_pct)<.03;
+ data=data.map((d,i)=>{peak=Math.max(peak,d.nav);const daily=i?(d.nav/data[i-1].nav-1)*100:null;const cum=(d.nav/data[0].nav-1)*100;const dd=(d.nav/peak-1)*100;for(const [key,value] of [['daily_return_pct',daily],['cum_ret_pct',comparable?cum:null],['drawdown_pct',comparable?dd:null],['benchmark_cum_ret_pct',comparableBench&&d.bench!==null&&data[0].bench!==null?(d.bench/data[0].bench-1)*100:null]])if(value!==null&&d.supplied[key]!==null&&Math.abs(d.supplied[key]-value)>.03)disagreements++;return {...d,daily,cum,dd};});
+ if(disagreements)warnings.push(`${disagreements} valores del CSV difieren de los cálculos por NAV; se muestran los recalculados.`);if(data.some(d=>d.bench===null))warnings.push('Benchmark ausente o incompleto: no se estiman los valores faltantes.');if(data.at(-1).time>Date.now())warnings.push('El historial contiene fechas futuras. Verifica si son simulaciones.');return {data,warnings};}
+function benchmarkDrawdowns(data){if(data.some(d=>d.bench===null))return data.map(()=>null);let peak=data[0].bench;return data.map(d=>{peak=Math.max(peak,d.bench);return (d.bench/peak-1)*100;});}
+function difference(a,b){return a===null||b===null?null:a-b;}
+function fmtPP(v){return v===null||!Number.isFinite(v)?'N/D':(v>0?'+':'')+v.toFixed(2)+' pp';}
+function fmtDD(v){return v===null||!Number.isFinite(v)?'N/D':(Object.is(v,-0)?0:v).toFixed(4)+'%';}
+function target(data,tf){const d=new Date(data.at(-1).time);if(tf==='ALL')return data[0].time;if(tf==='1D')return d.getTime()-DAY;if(tf==='1W')return d.getTime()-7*DAY;if(tf==='YTD')return Date.UTC(d.getUTCFullYear(),0,1)-DAY;const months={'1M':1,'3M':3,'6M':6,'1Y':12,'2Y':24,'3Y':36}[tf];const day=d.getUTCDate();d.setUTCDate(1);d.setUTCMonth(d.getUTCMonth()-months);const end=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,0)).getUTCDate();d.setUTCDate(Math.min(day,end));return d.getTime();}
+function period(data,tf){const time=target(data,tf);let idx=-1;data.forEach((d,i)=>{if(d.time<=time)idx=i;});const partial=idx<0;if(partial)idx=0;const selected=data.slice(idx);return {selected,partial,return:(data.at(-1).nav/data[idx].nav-1)*100};}
+function cagr(data,key){if(data.length<2||data.at(-1).time<=data[0].time||data.some(d=>d[key]===null))return null;return (Math.pow(data.at(-1)[key]/data[0][key],365.25*DAY/(data.at(-1).time-data[0].time))-1)*100;}
+function cadence(data,factor){let missing=0;const calendar=factor!==252;for(let i=1;i<data.length;i++){const gap=(data[i].time-data[i-1].time)/DAY;if(calendar){if(gap!==1)return false;}else{if(gap>5)return false;for(let t=data[i-1].time+DAY;t<data[i].time;t+=DAY){const w=new Date(t).getUTCDay();if(w!==0&&w!==6)missing++;}}}if(!calendar&&data.some(d=>[0,6].includes(new Date(d.time).getUTCDay())))return false;return missing<=Math.max(3,(data.length-1)*.08);}
+function risk(data,key,factor){if(data.length<3||!cadence(data,factor)||data.some(d=>d[key]===null))return {vol:null,sharpe:null};const returns=data.slice(1).map((d,i)=>d[key]/data[i][key]-1);const mean=returns.reduce((s,x)=>s+x,0)/returns.length;const sd=Math.sqrt(returns.reduce((s,x)=>s+(x-mean)**2,0)/(returns.length-1));return {vol:sd*Math.sqrt(factor)*100,sharpe:sd>1e-12?mean/sd*Math.sqrt(factor):null};}
+function monthly(data){const map=new Map();data.forEach(d=>map.set(d.date.slice(0,7),d));const result=[];for(const key of [...map.keys()].sort()){const end=map.get(key);const [y,m]=key.split('-').map(Number);const prevKey=new Date(Date.UTC(y,m-2,1)).toISOString().slice(0,7);const base=map.get(prevKey);const firstMonth=key===data[0].date.slice(0,7);const open=end===data.at(-1)&&end.time!==Date.UTC(y,m,0);result.push({key,value:base?(end.nav/base.nav-1)*100:firstMonth?(end.nav/data[0].nav-1)*100:null,partial:firstMonth||open});}return result;}
+function fmt(v,percent=true){return v===null||!Number.isFinite(v)?'N/D':(percent&&v>0?'+':'')+v.toFixed(2)+(percent?'%':'');}
+function color(v){return v===null?'neutral':v>0?'positive':v<0?'negative':'neutral';}
+const PortfolioCore={parseCSV,dateTime,validateCSV,target,period,cagr,cadence,risk,monthly,fmt};
+if(typeof module!=='undefined')module.exports=PortfolioCore;
+function linePath(points){return points.map((p,i)=>(i?'L':'M')+p[0]+','+p[1]).join(' ');}
+function advancedMetrics(data,key,factor,mar){
+ const empty={calmar:null,sortino:null,omega:null,ulcer:null,calmarFrom:null,calmarTo:null,calmarPartial:true};
+ if(!data.length||data.some(d=>d[key]===null))return empty;
+ const window=period(data,'3Y'),slice=window.selected;let peak=slice[0][key],maxDD=0;
+ slice.forEach(d=>{peak=Math.max(peak,d[key]);maxDD=Math.min(maxDD,(d[key]/peak-1)*100);});
+ const annual=cagr(slice,key);let fullPeak=data[0][key];const dds=data.map(d=>{fullPeak=Math.max(fullPeak,d[key]);return (d[key]/fullPeak-1)*100;});
+ const result={...empty,calmar:annual!==null&&maxDD<-1e-12?annual/Math.abs(maxDD):null,ulcer:Math.sqrt(dds.reduce((sum,x)=>sum+x*x,0)/dds.length),calmarFrom:slice[0].date,calmarTo:slice.at(-1).date,calmarPartial:window.partial};
+ if(data.length<3||!cadence(data,factor))return result;
+ const returns=data.slice(1).map((d,i)=>d[key]/data[i][key]-1),targetDaily=Math.pow(1+mar/100,1/factor)-1;
+ const excess=returns.map(r=>r-targetDaily),mean=excess.reduce((sum,x)=>sum+x,0)/excess.length;
+ const downside=Math.sqrt(excess.reduce((sum,x)=>sum+Math.min(x,0)**2,0)/excess.length);
+ const gains=excess.reduce((sum,x)=>sum+Math.max(x,0),0),losses=excess.reduce((sum,x)=>sum-Math.min(x,0),0);
+ return {...result,sortino:downside>1e-12?mean/downside*Math.sqrt(factor):null,omega:losses>1e-12?gains/losses:null};
+}
+function relativeMetrics(data,factor){
+ const empty={beta:null,correlation:null,tracking:null,information:null};
+ if(data.length<3||data.some(d=>d.bench===null)||!cadence(data,factor))return empty;
+ const a=data.slice(1).map((d,i)=>d.nav/data[i].nav-1),b=data.slice(1).map((d,i)=>d.bench/data[i].bench-1),n=a.length;
+ const avg=x=>x.reduce((sum,v)=>sum+v,0)/x.length,ma=avg(a),mb=avg(b);
+ const va=a.reduce((sum,v)=>sum+(v-ma)**2,0)/(n-1),vb=b.reduce((sum,v)=>sum+(v-mb)**2,0)/(n-1),cov=a.reduce((sum,v,i)=>sum+(v-ma)*(b[i]-mb),0)/(n-1);
+ const active=a.map((v,i)=>v-b[i]),mean=avg(active),sd=Math.sqrt(active.reduce((sum,v)=>sum+(v-mean)**2,0)/(n-1));
+ return {beta:vb>1e-24?cov/vb:null,correlation:va>1e-24&&vb>1e-24?Math.max(-1,Math.min(1,cov/Math.sqrt(va*vb))):null,tracking:sd*Math.sqrt(factor)*100,information:sd>1e-12?mean/sd*Math.sqrt(factor):null};
+}
+function riskEstimate(data,key,factor,rf){
+ const result=risk(data,key,factor);if(result.vol===null)return result;
+ const returns=data.slice(1).map((d,i)=>d[key]/data[i][key]-1),mean=returns.reduce((s,x)=>s+x,0)/returns.length;
+ const sd=result.vol/100/Math.sqrt(factor),dailyRf=Math.pow(1+rf/100,1/factor)-1;
+ return {vol:result.vol,sharpe:sd>1e-12?(mean-dailyRf)/sd*Math.sqrt(factor):null};
+}
+if(typeof module!=='undefined'){module.exports={...PortfolioCore,linePath,riskEstimate,benchmarkDrawdowns,difference,fmtPP,fmtDD,advancedMetrics,relativeMetrics};}
+if(typeof document!=='undefined'){
+ const $=id=>document.getElementById(id);let data=[],warnings=[],range='ALL',customWindow=null,generation=0,controller=null;
+ const set=(id,text)=>{$(id).textContent=text;};
+ function metric(id,v,percent=true){set(id,fmt(v,percent));$(id).className='value '+color(v);}
+ function status(message,error=false){set('status',message);$('status').className='status'+(error?' error':'');$('status').hidden=!message;}
+ function cell(tr,text,cls='',heat=null){const td=document.createElement('td');td.textContent=text;td.className=cls;if(Number.isFinite(heat)){const alpha=.07+Math.min(Math.abs(heat)/10,1)*.15;td.style.backgroundColor=heat>0?`rgba(8,127,114,${alpha})`:heat<0?`rgba(182,65,81,${alpha})`:'#f3f6f8';}tr.append(td);}
+ function tableRows(id,rows){const body=document.querySelector('#'+id+' tbody');body.replaceChildren();rows.forEach(values=>{const tr=document.createElement('tr');values.forEach(v=>cell(tr,v.text??v,v.cls??'',v.heat??null));body.append(tr);});}
+ function svgNode(tag,attrs={},text){const n=document.createElementNS('http://www.w3.org/2000/svg',tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v));if(text!==undefined)n.textContent=text;return n;}
+ function graph(id,selected,drawdown=false){
+  const host=$(id);host.replaceChildren();host.classList.remove('empty');
+  const width=host.getBoundingClientRect().width;if(width<10)return;
+  const w=width,h=drawdown?190:width<560?260:300,p={l:8,r:60,t:16,b:32};
+  const svg=svgNode('svg',{viewBox:`0 0 ${w} ${h}`,role:'img','aria-label':drawdown?'Drawdown desde máximos históricos':"Retorno acumulado de la estrategia y "+selectedBenchmark+""});svg.style.height=h+'px';host.append(svg);
+  const base=selected[0],compare=drawdown&&$('compare-dd').checked;
+  const series=drawdown?[selected.map(d=>d.dd),...(compare?[selected.map(d=>d.benchDD)]:[])]:[selected.map(d=>(d.nav/base.nav-1)*100),selected.map(d=>base.bench!==null&&d.bench!==null?(d.bench/base.bench-1)*100:null)];
+  const values=series.flat().filter(v=>v!==null);let low=Math.min(0,...values),high=drawdown?0:Math.max(0,...values);if(low===high){low-=.5;if(!drawdown)high+=.5;}const padding=(high-low)*.12;low-=padding;if(!drawdown)high+=padding;
+  const span=selected.at(-1).time-base.time,x=i=>p.l+(span?(selected[i].time-base.time)/span:0)*(w-p.l-p.r),y=v=>p.t+(high-v)/(high-low)*(h-p.t-p.b);
+  const axisLabels=[];for(let j=0;j<5;j++){const v=low+(high-low)*j/4,label=svgNode('text',{x:w-p.r+8,y:y(v)+3,fill:'#8792a2','text-anchor':'start','font-size':10},v.toFixed(high-low<2?2:1)+'%');axisLabels.push({node:label,pos:y(v)});svg.append(svgNode('line',{x1:p.l,x2:w-p.r,y1:y(v),y2:y(v),stroke:'#eef1f4'}),label);}
+  svg.append(svgNode('line',{x1:p.l,x2:w-p.r,y1:y(0),y2:y(0),stroke:'#b7c2ce','stroke-width':1,'stroke-dasharray':'3 3'}));
+  const ticks=Math.min(width<560?3:5,selected.length);for(let j=0;j<ticks;j++){const i=Math.round(j*(selected.length-1)/Math.max(1,ticks-1));svg.append(svgNode('text',{x:x(i),y:h-9,fill:'#677486','text-anchor':j===0?'start':j===ticks-1?'end':'middle','font-size':10},span>150*DAY?selected[i].date.slice(0,7):selected[i].date.slice(5)));}
+  const ink=k=>k===1?'#8792a2':drawdown?'#ba4c5a':'#008fa8';
+  const defs=svgNode('defs'),grad=svgNode('linearGradient',{id:id+'-fill',x1:0,x2:0,y1:0,y2:1});grad.append(svgNode('stop',{offset:'0%','stop-color':ink(0),'stop-opacity':'.08'}),svgNode('stop',{offset:'100%','stop-color':ink(0),'stop-opacity':'.01'}));defs.append(grad);svg.append(defs);
+  series.forEach((s,k)=>{let segments=[],segment=[];s.forEach((v,i)=>{if(v===null){if(segment.length)segments.push(segment);segment=[];}else segment.push([x(i),y(v)]);});if(segment.length)segments.push(segment);segments.forEach(points=>{const path=linePath(points);if(drawdown&&k===0&&points.length>1)svg.append(svgNode('path',{d:path+` L${points.at(-1)[0]},${y(0)} L${points[0][0]},${y(0)} Z`,fill:`url(#${id}-fill)`}));svg.append(svgNode('path',{d:path,fill:'none',stroke:ink(k),'stroke-width':k===0?1.8:1.25,'stroke-dasharray':k===1?'4 3':'none','stroke-linecap':'round','stroke-linejoin':'round'}));if(points.length===1)svg.append(svgNode('circle',{cx:points[0][0],cy:points[0][1],r:2.5,fill:ink(k)}));});});
+  if(!drawdown){const last=selected.length-1,labels=series.map((s,k)=>({k,value:s[last],actual:s[last]===null?null:y(s[last])})).filter(v=>v.value!==null);labels.forEach(l=>l.pos=Math.max(p.t+8,Math.min(h-p.b-8,l.actual)));if(labels.length===2&&Math.abs(labels[0].pos-labels[1].pos)<20){const upper=labels[0].actual<=labels[1].actual?labels[0]:labels[1],lower=upper===labels[0]?labels[1]:labels[0];upper.pos=Math.max(p.t+8,Math.min(upper.pos,h-p.b-28));lower.pos=Math.min(h-p.b-8,Math.max(lower.pos,upper.pos+20));}axisLabels.forEach(t=>{if(labels.some(l=>Math.abs(t.pos-l.pos)<14))t.node.setAttribute('visibility','hidden');});labels.forEach(l=>{svg.append(svgNode('circle',{cx:x(last),cy:l.actual,r:2.6,fill:ink(l.k)}),svgNode('line',{x1:w-p.r+1,x2:w-p.r+6,y1:l.actual,y2:l.pos,stroke:ink(l.k),'stroke-width':1}),svgNode('rect',{x:w-p.r+6,y:l.pos-8,width:52,height:16,rx:2,fill:ink(l.k)}),svgNode('text',{x:w-p.r+32,y:l.pos+3,fill:'white','text-anchor':'middle','font-size':9},fmt(l.value)));});}
+  const tooltip=document.createElement('div');tooltip.className='tooltip';tooltip.hidden=true;tooltip.setAttribute('role','status');tooltip.setAttribute('aria-live','off');host.append(tooltip);
+  const title=document.createElement('div');title.className='tooltip-title';tooltip.append(title);
+  const fields=drawdown?['Estrategia · drawdown',...(compare?[""+selectedBenchmark+" · drawdown"]:[])]:['Estrategia · acumulado',""+selectedBenchmark+" · acumulado","Diferencia vs "+selectedBenchmark+"",'Variación diaria','Drawdown'];
+  const outputs=fields.map((label,k)=>{const row=document.createElement('div');row.className='tooltip-row'+(!drawdown&&k===2?' emphasis':'');const name=document.createElement('span'),value=document.createElement('strong');name.textContent=label;row.append(name,value);tooltip.append(row);return value;});
+  const guide=svgNode('line',{y1:p.t,y2:h-p.b,stroke:'#a6b3c2','stroke-dasharray':'2 4',visibility:'hidden'});svg.append(guide);
+  const gap=svgNode('line',{stroke:'#243244','stroke-width':2,'stroke-opacity':'.65',visibility:'hidden'});svg.append(gap);
+  const dots=series.map((_,k)=>{const dot=svgNode('circle',{r:3.5,fill:ink(k),stroke:'white','stroke-width':1.5,visibility:'hidden'});svg.append(dot);return dot;});let cursor=selected.length-1;
+  function show(i){cursor=i;const row=selected[i],a=series[0][i],b=series[1]?.[i]??null;title.textContent=row.date;const vals=drawdown?[a,...(compare?[b]:[])]:[a,b,difference(a,b),row.daily,row.dd];outputs.forEach((o,k)=>{o.textContent=drawdown?fmtDD(vals[k]):k===2?fmtPP(vals[k]):fmt(vals[k]);o.className=color(vals[k]);});guide.setAttribute('x1',x(i));guide.setAttribute('x2',x(i));guide.setAttribute('visibility','visible');dots.forEach((dot,k)=>{const value=series[k][i];dot.setAttribute('visibility',value===null?'hidden':'visible');if(value!==null){dot.setAttribute('cx',x(i));dot.setAttribute('cy',y(value));}});gap.setAttribute('visibility',!drawdown&&b!==null?'visible':'hidden');if(!drawdown&&b!==null){gap.setAttribute('x1',x(i));gap.setAttribute('x2',x(i));gap.setAttribute('y1',y(a));gap.setAttribute('y2',y(b));}tooltip.hidden=false;const tw=tooltip.offsetWidth||228;const left=x(i)+12+tw>w?x(i)-tw-12:x(i)+12;tooltip.style.left=Math.max(8,Math.min(w-tw-8,left))+'px';tooltip.style.top='10px';}
+  function hide(){tooltip.hidden=true;guide.setAttribute('visibility','hidden');gap.setAttribute('visibility','hidden');dots.forEach(d=>d.setAttribute('visibility','hidden'));}
+  function nearest(e){const box=svg.getBoundingClientRect(),pos=(e.clientX-box.left)/box.width*w;let lo=0,hi=selected.length-1;while(lo<hi){const mid=Math.floor((lo+hi)/2);if(x(mid)<pos)lo=mid+1;else hi=mid;}return {index:lo>0&&Math.abs(x(lo-1)-pos)<Math.abs(x(lo)-pos)?lo-1:lo,pos:Math.max(p.l,Math.min(w-p.r,pos))};}
+  let drag=null;const selection=svgNode('rect',{y:p.t,height:h-p.t-p.b,fill:'#008fa8','fill-opacity':'.08',stroke:'#008fa8','stroke-width':1,visibility:'hidden'});svg.append(selection);
+  svg.onpointermove=e=>{tooltip.setAttribute('aria-live','off');const point=nearest(e);show(point.index);if(drag){selection.setAttribute('x',Math.min(drag.pos,point.pos));selection.setAttribute('width',Math.abs(point.pos-drag.pos));selection.setAttribute('visibility','visible');}};
+  svg.onpointerdown=e=>{const point=nearest(e);show(point.index);if(!drawdown&&e.pointerType==='mouse'&&e.button===0){drag={...point,pointerId:e.pointerId};svg.setPointerCapture?.(e.pointerId);}};
+  svg.onpointerup=e=>{if(!drag)return;const point=nearest(e),start=drag;drag=null;selection.setAttribute('visibility','hidden');if(svg.hasPointerCapture?.(e.pointerId))svg.releasePointerCapture(e.pointerId);if(Math.abs(point.pos-start.pos)>=8&&point.index!==start.index){customWindow=[selected[Math.min(start.index,point.index)].time,selected[Math.max(start.index,point.index)].time];renderRange();}};
+  svg.onpointercancel=()=>{drag=null;selection.setAttribute('visibility','hidden');hide();};host.onpointerleave=()=>{if(!drag)hide();};host.tabIndex=0;host.setAttribute('aria-label',(drawdown?'Drawdown':'Equity curve')+'. Flechas para recorrer fechas; Escape para cerrar los datos.');host.onfocus=()=>{tooltip.setAttribute('aria-live','polite');show(cursor);};host.onblur=hide;host.onkeydown=e=>{if(e.key==='Escape'){hide();return;}if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();tooltip.setAttribute('aria-live','polite');show(e.key==='Home'?0:e.key==='End'?selected.length-1:Math.max(0,Math.min(selected.length-1,cursor+(e.key==='ArrowRight'?1:-1))));}};
+ }
+ function renderDrawdown(selected){const compare=$('compare-dd').checked;$('dd-benchmark-legend').hidden=!compare;$('dd-table-heading').hidden=!compare;graph('underwater',selected,true);tableRows('drawdown-table',selected.map(d=>[d.date,{text:fmtDD(d.dd),cls:color(d.dd)},...(compare?[{text:fmtDD(d.benchDD),cls:color(d.benchDD)}]:[])]));}
+ function selectedWindow(){const p=period(data,range);if(!customWindow)return p;return {selected:data.filter(d=>d.time>=customWindow[0]&&d.time<=customWindow[1]),partial:false};}
+ function renderRange(){if(!data.length)return;const p=selectedWindow(),base=p.selected[0];document.querySelectorAll('[data-range]').forEach(b=>b.setAttribute('aria-pressed',String(!customWindow&&b.dataset.range===range)));$('reset-zoom').hidden=!customWindow;$('benchmark-legend').hidden=base.bench===null;set('range-note',`${base.date} → ${p.selected.at(-1).date}${customWindow?' · Tramo ampliado':p.partial?' · Historial parcial':''}`);graph('performance',p.selected);renderDrawdown(p.selected);tableRows('chart-table',p.selected.map(d=>{const a=(d.nav/base.nav-1)*100,b=base.bench!==null&&d.bench!==null?(d.bench/base.bench-1)*100:null,delta=difference(a,b);return [d.date,{text:fmt(a),cls:color(a)},{text:fmt(b),cls:color(b)},{text:fmtPP(delta),cls:color(delta)}];}));}
+ function renderAdvanced(){const factor=Number($('frequency').value),mar=Number($('mar').value),a=advancedMetrics(data,'nav',factor,mar),b=advancedMetrics(data,'bench',factor,mar),relative=relativeMetrics(data,factor),n=data.length-1;
+  const ratio=v=>fmt(v,false),pct=v=>fmt(v).replace(/^\+/, '');
+  tableRows('advanced',[
+   ['Calmar · hasta 36 meses',ratio(a.calmar),ratio(b.calmar),'CAGR por unidad de caída máxima en la misma ventana.'],
+   ['Sortino anualizado',ratio(a.sortino),ratio(b.sortino),'Retorno sobre el objetivo ajustado por desviaciones a la baja.'],
+   ['Omega · retornos diarios',ratio(a.omega),ratio(b.omega),'Magnitud de excesos sobre el objetivo frente a los déficits.'],
+   ['Ulcer index',pct(a.ulcer),pct(b.ulcer),'Profundidad y persistencia de las caídas observadas; menor indica menos caída.'],
+   ["Beta frente a "+selectedBenchmark+"",ratio(relative.beta),'—',"Sensibilidad histórica a los movimientos diarios de "+selectedBenchmark+"."],
+   ["Correlación con "+selectedBenchmark+"",ratio(relative.correlation),'—','Grado de movimiento conjunto, de −1 a +1.'],
+   ['Tracking error anualizado',pct(relative.tracking),'—',"Variabilidad de la diferencia diaria frente a "+selectedBenchmark+"."],
+   ['Information ratio',ratio(relative.information),'—',"Diferencia media frente a "+selectedBenchmark+" por unidad de tracking error."]
+  ]);
+  set('advanced-note','Historial: '+data[0].date+' → '+data.at(-1).date+(n<60?' · Estimaciones provisionales: muestra corta.':' · Indicadores históricos.'));
+  set('advanced-assumptions',`Objetivo Sortino / Omega: ${mar.toFixed(2)}% anual · Factor: ${factor}. Calmar: ${a.calmarFrom} → ${a.calmarTo}${a.calmarPartial?' (historial menor de 36 meses; ventana provisional)':''}. N/D: datos insuficientes o cociente no definido. —: no aplica a la columna VOO.`);
+ }
+ function render(){
+  const first=data[0],last=data.at(-1),days=Math.round((last.time-first.time)/DAY),n=data.length-1,factor=Number($('frequency').value),rf=Number($('rf').value);
+  set('last-date',last.date);set('daily',fmt(last.daily));$('daily').className=color(last.daily);metric('cum',last.cum);set('inception','Desde '+first.date);const benchTotal=first.bench!==null&&last.bench!==null?(last.bench/first.bench-1)*100:null;set('benchmark',fmt(benchTotal));$('benchmark').className=color(benchTotal);set('maxdd',fmt(Math.min(...data.map(d=>d.dd))));set('dd',fmt(last.dd));$('maxdd').className='negative';$('dd').className='negative';set('period-chip',first.date+' → '+last.date);$('benchmark-legend').hidden=first.bench===null;
+  $('cagr-observed').hidden=days<365;$('cagr-badge').hidden=days>=365;metric('cagr',cagr(data,'nav'));set('bcagr',fmt(cagr(data,'bench')));
+  const a=riskEstimate(data,'nav',factor,rf),b=riskEstimate(data,'bench',factor,rf);metric('vol',a.vol);$('vol').textContent=fmt(a.vol).replace(/^\+/, '');$('vol').className='value';metric('sharpe',a.sharpe,false);set('bvol',fmt(b.vol).replace(/^\+/, ''));set('bsharpe',fmt(b.sharpe,false));$('vol-badge').hidden=n>=60;$('sharpe-badge').hidden=n>=60;$('vol-observed').hidden=n<60;$('sharpe-observed').hidden=n<60;const benchDD=benchmarkDrawdowns(data);data.forEach((d,i)=>d.benchDD=benchDD[i]);const completeBench=benchDD.every(v=>v!==null);set('bdd',completeBench?fmt(Math.min(...benchDD))+' / '+fmt(benchDD.at(-1)):'N/D');$('compare-dd').disabled=!completeBench;if(!completeBench)$('compare-dd').checked=false;set('dd-note',completeBench?'Máximos desde el inicio del historial':""+selectedBenchmark+": historial incompleto");set('sample-note',`${n} retornos observados · ${days} días · Factor anual: ${factor} · Tasa libre de riesgo: ${rf.toFixed(2)}%`);set('annual-note',days<365?'Anualización hipotética: extrapola el ritmo observado a un año. No es una rentabilidad anual obtenida ni una predicción. Con pocos datos puede variar de forma considerable.':'CAGR calculado para el historial completo. Volatilidad y Sharpe son estimaciones históricas, no pronósticos.');
+  $('trailing').replaceChildren();for(const [tf,label]of [['1W','1 Semana'],['1M','1 Mes'],['3M','3 Meses'],['6M','6 Meses'],['1Y','1 Año'],['YTD','YTD']]){const p=period(data,tf),item=document.createElement('div'),title=document.createElement('span'),value=document.createElement('strong');title.textContent=label;title.className='label';value.textContent=p.partial&&tf!=='YTD'?'N/D':fmt(p.return)+(p.partial?'*':'');value.className=color(p.partial&&tf!=='YTD'?null:p.return);item.append(title,value);$('trailing').append(item);}
+  const months=monthly(data),years=[...new Set(data.map(d=>d.date.slice(0,4)))].sort().reverse();tableRows('monthly',years.map(year=>{const cells=[year];for(let m=1;m<=12;m++){const item=months.find(d=>d.key===year+'-'+String(m).padStart(2,'0'));cells.push({text:item?fmt(item.value)+(item.partial?'*':''):'—',cls:item?color(item.value):'neutral',heat:item?.value??null});}const ys=data.filter(d=>d.date.startsWith(year)),prior=data.filter(d=>d.date<year+'-01-01').at(-1),base=prior??ys[0],v=(ys.at(-1).nav/base.nav-1)*100;cells.push({text:fmt(v)+(!prior||ys.at(-1).date<year+'-12-31'?'*':''),cls:color(v),heat:v});return cells;}));tableRows('recent',data.slice(-8).reverse().map(d=>[d.date,{text:fmt(d.cum),cls:color(d.cum)},{text:fmt(d.daily),cls:color(d.daily)},{text:fmt(d.dd),cls:color(d.dd)},fmt(first.bench!==null&&d.bench!==null?(d.bench/first.bench-1)*100:null)]));
+  const notes=[...warnings];if(!cadence(data,factor))notes.push('La frecuencia no coincide con las fechas: volatilidad y Sharpe no disponibles.');if(n<2)notes.push('Volatilidad y Sharpe requieren dos retornos.');set('diagnostics',notes.length?notes.join('\n'):'Serie validada. Los indicadores se calculan desde el NAV.');$('diagnostics').style.whiteSpace='pre-line';$('download').disabled=false;const age=Math.floor((Date.now()-last.time)/DAY);status(age>7?`Último cierre de hace ${age} días. Comprueba la actualización de la fuente.`:'');renderAdvanced();renderRange();
+ }
+ function accept(text){const parsed=validateCSV(text);data=parsed.data;warnings=parsed.warnings;customWindow=null;render();}
+ async function load(){
+  const ticket=++generation;$('reload').disabled=true;
+  try{const payload=await dashboardData();if(!payload.daily.length)throw Error('Aún no hay historial diario disponible.');const text='date,nav,benchmark_nav\n'+payload.daily.map(d=>[d.date,d.nav,benchmarkNav(d)??''].join(',')).join('\n');if(ticket===generation)accept(text);}
+  catch(e){if(ticket===generation)status(e.message+(data.length?' Se conserva el último historial válido.':''),true);}
+  finally{if(ticket===generation)$('reload').disabled=false;}
+ }
+ window.addEventListener('intraday-daily-loaded',load);
+ window.addEventListener('benchmark-changed',load);
+ $('reload').onclick=()=>{dashboardCachedAt=0;load();};$('frequency').onchange=()=>{if(data.length)render();};$('rf').onchange=()=>{const input=$('rf');if(!input.checkValidity()||input.value===''){input.reportValidity();input.value='0';}if(data.length)render();};document.querySelectorAll('[data-range]').forEach(b=>b.onclick=()=>{range=b.dataset.range;customWindow=null;renderRange();});$('compare-dd').onchange=()=>{if(data.length)renderDrawdown(selectedWindow().selected);};
+ $('reset-zoom').onclick=()=>{customWindow=null;renderRange();};$('mar').onchange=()=>{const input=$('mar');if(!input.checkValidity()||input.value===''){input.reportValidity();input.value='0';}if(data.length)renderAdvanced();};
+ $('file').onchange=async e=>{const f=e.target.files[0];if(!f)return;const ticket=++generation;controller?.abort();$('reload').disabled=false;try{if(f.size>10000000)throw Error('CSV demasiado grande; límite de 10 MB.');status('Validando historial…');const text=await f.text();if(ticket===generation)accept(text);}catch(err){if(ticket===generation)status(err.message+(data.length?' Se conserva el último historial válido.':''),true);}finally{e.target.value='';}};
+ $('download').onclick=()=>{const content='date,nav,benchmark_nav,daily_return_pct,cum_ret_pct,drawdown_pct\n'+data.map(d=>[d.date,d.nav,d.bench??'',d.daily??'',d.cum,d.dd].join(',')).join('\n');const url=URL.createObjectURL(new Blob([content],{type:'text/csv;charset=utf-8'}));const link=document.createElement('a');link.href=url;link.download='nav_history_validated.csv';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+ let resizeTimer;if(typeof ResizeObserver!=='undefined'){let lastWidth=0;const observer=new ResizeObserver(entries=>{const width=entries[0].contentRect.width;if(Math.abs(width-lastWidth)<1)return;lastWidth=width;clearTimeout(resizeTimer);resizeTimer=setTimeout(renderRange,100);});observer.observe($('performance'));}else window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(renderRange,100);});load();
+}
+</script>
+</body>
+</html>
