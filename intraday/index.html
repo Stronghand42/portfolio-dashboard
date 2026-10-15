@@ -133,7 +133,7 @@ details.panel{padding:0}details.panel>summary{padding:12px 16px;cursor:pointer;f
 })();
 
 (function(){
-  const feed='https://raw.githubusercontent.com/Stronghand42/portfolio-data/main/intraday/';
+  const feed='https://raw.githubusercontent.com/Stronghand42/portfolio-dashboard/main/intraday/';
   const bytes=value=>Uint8Array.from(atob(value),c=>c.charCodeAt(0));
   const encoder=new TextEncoder(),decoder=new TextDecoder();
   const privateOrigin='https://nscheelje-intraday.deeplemon17.chatgpt.site',accessStorage='nscheelje/intraday/access-v1';
@@ -206,7 +206,7 @@ details.panel{padding:0}details.panel>summary{padding:12px 16px;cursor:pointer;f
   }
   async function readDashboard(){
     const stamp='?at='+Math.floor(Date.now()/45000),notes=[];
-    const dailyURL='https://raw.githubusercontent.com/Stronghand42/portfolio-data/main/nav_history.csv';
+    const dailyURL='https://raw.githubusercontent.com/Stronghand42/portfolio-dashboard/main/nav_history.csv';
     const response=await fetch(dailyURL+stamp,{cache:'no-store',signal:AbortSignal.timeout(20000)});
     if(!response.ok)throw Error('No se pudo cargar el historial EOD.');
     const text=await response.text();if(text.length>2_000_000)throw Error('Historial EOD demasiado grande.');
