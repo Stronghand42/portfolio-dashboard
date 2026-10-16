@@ -61,10 +61,10 @@ button,select,.file-label,input[type=number],.pages-access input{background:#e4e
 <section class="card kpi"><div class="label">Volatilidad anualizada</div><div id="vol" class="value">—</div><div class="metric-foot"><span id="vol-badge" class="badge">Estimación provisional</span><span id="vol-observed" hidden="">Variabilidad de los retornos</span></div><div class="comparison"><span><span data-benchmark-description="">S&amp;P 500 (VOO)</span></span><strong id="bvol">—</strong></div></section>
 <section class="card kpi"><div class="label">Sharpe ratio</div><div id="sharpe" class="value">—</div><div class="metric-foot"><span id="sharpe-badge" class="badge">Estimación provisional</span><span id="sharpe-observed" hidden="">Retorno ajustado por riesgo</span></div><div class="comparison"><span><span data-benchmark-description="">S&amp;P 500 (VOO)</span></span><strong id="bsharpe">—</strong></div></section>
 <section class="card kpi"><div class="label">Drawdown · máximo / actual</div><div class="value dd-value"><span id="maxdd">—</span><small class="muted">/</small><small id="dd">—</small></div><div class="metric-foot">Caída desde el máximo del historial</div><div class="comparison"><span><span data-benchmark-description="">S&amp;P 500 (VOO)</span></span><strong id="bdd">—</strong></div></section>
-</div><p class="small muted metric-context">Retorno, CAGR y drawdown: última lectura disponible. Volatilidad y Sharpe: cierres diarios.</p><section class="card panel" id="live-equity-panel"><div class="panel-head"><div><h2 id="live-title" tabindex="-1">Equity curve · Intradía</h2><p class="small muted">Retorno acumulado · Lecturas intradiarias con historial EOD · Comparación con <span data-benchmark-label="">VOO</span>.</p></div><div class="ranges" aria-label="Período del gráfico"><button aria-pressed="false" data-live-range="1D">1D</button><button aria-pressed="false" data-live-range="1W">1S</button><button aria-pressed="false" data-live-range="1M">1M</button><button aria-pressed="false" data-live-range="3M">3M</button><button aria-pressed="false" data-live-range="6M">6M</button><button aria-pressed="false" data-live-range="1Y">1A</button><button aria-pressed="false" data-live-range="2Y">2A</button><button aria-pressed="false" data-live-range="YTD">YTD</button><button aria-pressed="true" data-live-range="ALL">TOTAL</button></div></div><div class="chart-meta"><div class="legend"><span><i class="swatch"></i>NScheelje Strategy</span><span id="live-benchmark-legend"><i class="swatch bench"></i><span data-benchmark-label="">VOO</span></span></div><span id="live-range-note" class="muted">—</span></div><div id="live-equity" class="chart empty">Esperando historial.</div><div class="chart-hint"><span>Cursor o toque: datos · Arrastra con el ratón: ampliar un tramo · Teclado: ← →</span><button id="live-reset-zoom" hidden="">Restablecer vista</button></div><details class="chart-table"><summary>Ver datos del gráfico</summary><div class="scroll"><table id="live-chart-table"><caption>Retornos desde la primera fecha mostrada. Diferencia = estrategia − <span data-benchmark-label="">VOO</span>, en puntos porcentuales (pp).</caption><thead><tr><th scope="col">Fecha</th><th scope="col">Estrategia</th><th scope="col"><span data-benchmark-label="">VOO</span></th><th scope="col">Diferencia (pp)</th></tr></thead><tbody></tbody></table></div></details><p class="small muted live-history" id="live-history-note">Cargando historial EOD e intradiario.</p></section><section class="card panel"><h2>Rendimientos mensuales (%)</h2><p class="small muted" id="monthly-update">Mes actual y Año / YTD: última lectura disponible · Meses cerrados: cierres diarios.</p><div class="scroll"><table id="monthly" class="heatmap"><caption>* Período parcial o en curso. — Sin registros. N/D: dato o base no disponible.</caption><thead><tr><th scope="col">Año</th><th scope="col">Ene</th><th scope="col">Feb</th><th scope="col">Mar</th><th scope="col">Abr</th><th scope="col">May</th><th scope="col">Jun</th><th scope="col">Jul</th><th scope="col">Ago</th><th scope="col">Sep</th><th scope="col">Oct</th><th scope="col">Nov</th><th scope="col">Dic</th><th scope="col">Año / YTD</th></tr></thead><tbody></tbody></table></div><p class="monthly-note">Verde: retorno positivo · Rojo: retorno negativo. El signo y la cifra identifican cada resultado.</p></section>
+</div><p class="small muted metric-context">Retorno, CAGR y drawdown: última lectura disponible. Volatilidad y Sharpe: cierres diarios.</p><section class="card panel" id="live-equity-panel"><div class="panel-head"><div><h2 id="live-title" tabindex="-1">Equity curve · Intradía</h2><p class="small muted">Retorno acumulado · Lecturas intradiarias con historial EOD · Comparación con <span data-benchmark-label="">VOO</span>.</p></div><div class="ranges" aria-label="Período del gráfico"><button aria-pressed="false" data-live-range="1D">1D</button><button aria-pressed="false" data-live-range="1W">1S</button><button aria-pressed="false" data-live-range="1M">1M</button><button aria-pressed="false" data-live-range="3M">3M</button><button aria-pressed="false" data-live-range="6M">6M</button><button aria-pressed="false" data-live-range="1Y">1A</button><button aria-pressed="false" data-live-range="2Y">2A</button><button aria-pressed="false" data-live-range="YTD">YTD</button><button aria-pressed="true" data-live-range="ALL">TOTAL</button></div></div><div class="chart-meta"><div class="legend"><span><i class="swatch"></i>NScheelje Strategy</span><span id="live-benchmark-legend"><i class="swatch bench"></i><span data-benchmark-label="">VOO</span></span></div><span id="live-range-note" class="muted">—</span></div><div id="live-equity" class="chart empty">Esperando historial.</div><div class="chart-hint"><span>Cursor o toque: datos · Arrastra con el ratón: ampliar un tramo · Teclado: ← →</span><button id="live-reset-zoom" hidden="">Restablecer vista</button></div><details class="chart-table"><summary>Ver datos del gráfico</summary><div class="scroll"><table id="live-chart-table"><caption>Se muestran hasta 500 lecturas de la vista; la curva conserva todos los puntos. Retornos desde la primera fecha mostrada. Diferencia = estrategia − <span data-benchmark-label="">VOO</span>, en puntos porcentuales (pp).</caption><thead><tr><th scope="col">Fecha</th><th scope="col">Estrategia</th><th scope="col"><span data-benchmark-label="">VOO</span></th><th scope="col">Diferencia (pp)</th></tr></thead><tbody></tbody></table></div></details><p class="small muted live-history" id="live-history-note">Cargando historial EOD e intradiario.</p></section><section class="card panel"><h2>Rendimientos mensuales (%)</h2><p class="small muted" id="monthly-update">Mes actual y Año / YTD: última lectura disponible · Meses cerrados: cierres diarios.</p><div class="scroll"><table id="monthly" class="heatmap"><caption>* Período parcial o en curso. — Sin registros. N/D: dato o base no disponible.</caption><thead><tr><th scope="col">Año</th><th scope="col">Ene</th><th scope="col">Feb</th><th scope="col">Mar</th><th scope="col">Abr</th><th scope="col">May</th><th scope="col">Jun</th><th scope="col">Jul</th><th scope="col">Ago</th><th scope="col">Sep</th><th scope="col">Oct</th><th scope="col">Nov</th><th scope="col">Dic</th><th scope="col">Año / YTD</th></tr></thead><tbody></tbody></table></div><p class="monthly-note">Verde: retorno positivo · Rojo: retorno negativo. El signo y la cifra identifican cada resultado.</p></section>
 
 <details class="card panel"><summary>Rendimientos por período</summary><div class="detail-body"><div id="trailing" class="trailing"></div><p class="small muted">Calculados con cierres diarios. * Período parcial. N/D: el historial no cubre el período completo.</p></div></details>
-<section class="card panel" id="live-drawdown-panel"><div class="panel-head"><div><h2>Drawdown</h2><p class="small muted">Caída desde el máximo de cada serie; 0% indica un nuevo máximo.</p></div><label class="compare-toggle"><input id="live-compare-dd" type="checkbox">Comparar con <span data-benchmark-label="">VOO</span></label></div><div class="chart-meta"><div class="legend"><span><i class="swatch dd"></i>NScheelje Strategy</span><span id="live-dd-benchmark-legend" hidden=""><i class="swatch bench"></i><span data-benchmark-label="">VOO</span></span></div><span id="live-dd-note" class="muted">Máximos desde el inicio del historial</span></div><div id="live-underwater" class="chart empty">Esperando historial.</div><p class="chart-hint">Desplaza el cursor o toca la curva para consultar fecha y drawdown.</p><details class="chart-table"><summary>Ver datos del drawdown</summary><div class="scroll"><table id="live-drawdown-table"><caption>Porcentajes calculados desde el NAV, con cuatro decimales. El filtro conserva los máximos históricos.</caption><thead><tr><th scope="col">Fecha</th><th scope="col">Estrategia</th><th scope="col" id="live-dd-table-heading" hidden=""><span data-benchmark-label="">VOO</span></th></tr></thead><tbody></tbody></table></div></details></section>
+<section class="card panel" id="live-drawdown-panel"><div class="panel-head"><div><h2>Drawdown</h2><p class="small muted">Caída desde el máximo de cada serie; 0% indica un nuevo máximo.</p></div><label class="compare-toggle"><input id="live-compare-dd" type="checkbox">Comparar con <span data-benchmark-label="">VOO</span></label></div><div class="chart-meta"><div class="legend"><span><i class="swatch dd"></i>NScheelje Strategy</span><span id="live-dd-benchmark-legend" hidden=""><i class="swatch bench"></i><span data-benchmark-label="">VOO</span></span></div><span id="live-dd-note" class="muted">Máximos desde el inicio del historial</span></div><div id="live-underwater" class="chart empty">Esperando historial.</div><p class="chart-hint">Desplaza el cursor o toca la curva para consultar fecha y drawdown.</p><details class="chart-table"><summary>Ver datos del drawdown</summary><div class="scroll"><table id="live-drawdown-table"><caption>Se muestran hasta 500 lecturas de la vista; la curva conserva todos los puntos. Porcentajes calculados desde el NAV, con cuatro decimales. El filtro conserva los máximos históricos.</caption><thead><tr><th scope="col">Fecha</th><th scope="col">Estrategia</th><th scope="col" id="live-dd-table-heading" hidden=""><span data-benchmark-label="">VOO</span></th></tr></thead><tbody></tbody></table></div></details></section>
 
 <details class="card panel" id="live-health"><summary>Última lectura y estado de actualización</summary><div class="detail-body"><div class="live-kpis">
 <div><span class="label">Desde el último cierre</span><strong id="live-return">—</strong></div>
@@ -218,6 +218,84 @@ button,select,.file-label,input[type=number],.pages-access input{background:#e4e
     const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:bytes(box.nonce),additionalData:encoder.encode('nscheelje-intraday/v1')},key,bytes(box.ciphertext));
     return JSON.parse(decoder.decode(plain));
   }
+  let transportCheckedAt=0,transportFeed=feed,readerDailyHistory=null,readerHistoryTime='';
+  const archiveReferences=new Map(),archiveVersions=new Map(),baselineReads=new Map();
+  async function resolveReadingFeed(){
+    if(Date.now()-transportCheckedAt<900000)return transportFeed;
+    transportCheckedAt=Date.now();
+    try{
+      const config=await fetchJSON(feed+'transport.json',4096),url=new URL(config.feed);
+      if(config.version!==1||config.archives!==true||url.protocol!=='https:'||!url.hostname.endsWith('.workers.dev')||url.username||url.password||url.port||url.pathname!=='/feed/'||url.search||url.hash)throw Error('Ruta de datos inválida.');
+      transportFeed=url.href;
+    }catch{}
+    return transportFeed;
+  }
+  function checkReadingEntry(entry,now){
+    if(typeof entry?.path!=='string'||!/^\d{4}-\d{2}-\d{2}\/\d{2}-\d{2}\.json$/.test(entry.path)||typeof entry.timestamp!=='string'||!Number.isFinite(Date.parse(entry.timestamp))||Date.parse(entry.timestamp)>now+120000)throw Error('Índice de lecturas inválido.');
+    const time=new Date(Math.floor(Date.parse(entry.timestamp)/900000)*900000).toISOString();
+    if(entry.path!==time.slice(0,10)+'/'+time.slice(11,16).replace(':','-')+'.json')throw Error('Ranura de lectura inválida.');
+    return entry;
+  }
+  async function saveReading(entry,envelope){
+    const payload=await decryptReading(envelope);
+    if(payload.timestamp!==entry.timestamp)throw Error('La fecha de una lectura no coincide con su índice.');
+    if(payload.kind==='error'){
+      if(typeof payload.error!=='string'||payload.error.length>400)throw Error('Aviso de actualización inválido.');
+      saved.set(entry.path,{timestamp:entry.timestamp,payload});return;
+    }
+    IntradayValidator.validateSnapshot(payload,Date.parse(entry.timestamp));
+    if(entry.timestamp>=readerHistoryTime){
+      let history=payload.daily_history;
+      if(payload.history_path!==undefined){
+        if(typeof payload.history_path!=='string'||!/^baselines\/\d{4}-\d{2}-\d{2}-[a-f0-9]{16}\.json$/.test(payload.history_path))throw Error('Base histórica inválida.');
+        const path=payload.history_path;
+        if(!baselineReads.has(path))baselineReads.set(path,(async()=>{try{const box=await fetchJSON(transportFeed+path+'?version='+path.split('/').at(-1),3_000_000,'force-cache');return await decryptReading(box);}catch(error){baselineReads.delete(path);throw error;}})());
+        const baseline=await baselineReads.get(path);
+        if(baseline.schema_version!==1||baseline.base_date!==payload.base_date)throw Error('Base histórica inconsistente.');
+        IntradayValidator.validateSnapshot({...payload,daily_history:baseline.daily_history},Date.parse(entry.timestamp));history=baseline.daily_history;
+      }
+      if(entry.timestamp>=readerHistoryTime){readerDailyHistory=history;readerHistoryTime=entry.timestamp;}
+    }
+    const {daily_history,...point}=payload;saved.set(entry.path,{timestamp:entry.timestamp,payload:point});
+  }
+  async function archivedReadings(base,stamp,now,notes){
+    const root=await fetchJSON(base+'archives/index.json'+stamp,200000);
+    if(root.version!==1||!Array.isArray(root.years)||root.years.length>1000)throw Error('Archivo histórico inválido.');
+    const seenYears=new Set();
+    for(const year of root.years){
+      if(typeof year.year!=='string'||!/^\d{4}$/.test(year.year)||year.path!=='archives/'+year.year+'/index.json'||seenYears.has(year.year))throw Error('Año histórico inválido.');seenYears.add(year.year);
+    }
+    for(let i=0;i<root.years.length;i+=6){
+      const outcomes=await Promise.allSettled(root.years.slice(i,i+6).map(async year=>{
+        const index=await fetchJSON(base+year.path+stamp,300000),days=new Set();
+        if(index.version!==1||!Array.isArray(index.entries)||index.entries.length>366)throw Error('Índice anual inválido.');
+        const valid=index.entries.map(ref=>{
+          if(typeof ref.day!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(ref.day)||ref.day.slice(0,4)!==year.year||ref.path!=='archives/'+year.year+'/'+ref.day+'.json'||!Number.isInteger(ref.count)||ref.count<1||ref.count>96||typeof ref.last!=='string'||!Number.isFinite(Date.parse(ref.last))||Date.parse(ref.last)>now+120000||typeof ref.sha256!=='string'||!/^[a-f0-9]{64}$/.test(ref.sha256)||days.has(ref.day))throw Error('Referencia histórica inválida.');days.add(ref.day);return ref;
+        });valid.forEach(ref=>archiveReferences.set(ref.path,ref));
+      }));
+      if(outcomes.some(result=>result.status==='rejected'))notes.push('No se pudo actualizar una parte del índice histórico. Se conserva el archivo conocido.');
+    }
+    const refs=[...archiveReferences.values()].sort((a,b)=>b.day.localeCompare(a.day)),entries=[];
+    let unavailable=0;
+    for(let i=0;i<refs.length;i+=6){
+      const results=await Promise.allSettled(refs.slice(i,i+6).map(async ref=>{
+        const previous=archiveVersions.get(ref.path);
+        if(previous?.sha256===ref.sha256&&previous.entries.every(entry=>saved.get(entry.path)?.timestamp===entry.timestamp)){entries.push(...previous.entries);return;}
+        const bundle=await fetchJSON(base+ref.path+'?version='+ref.sha256,2_000_000,'force-cache');
+        if(bundle.version!==1||bundle.day!==ref.day||!Array.isArray(bundle.entries)||bundle.entries.length!==ref.count)throw Error('Paquete histórico inválido.');
+        const digest=new Uint8Array(await crypto.subtle.digest('SHA-256',encoder.encode(JSON.stringify(bundle))));
+        if([...digest].map(n=>n.toString(16).padStart(2,'0')).join('')!==ref.sha256)throw Error('El archivo histórico no coincide con su índice.');
+        const paths=new Set(),descriptors=bundle.entries.map(entry=>{checkReadingEntry(entry,now);if(!entry.path.startsWith(ref.day+'/')||paths.has(entry.path))throw Error('Fecha histórica inválida.');paths.add(entry.path);return {path:entry.path,timestamp:entry.timestamp};});
+        if(descriptors.at(-1)?.timestamp!==ref.last)throw Error('Última fecha histórica inválida.');
+        const pending=bundle.entries.filter(entry=>saved.get(entry.path)?.timestamp!==entry.timestamp).sort((a,b)=>b.timestamp.localeCompare(a.timestamp));
+        for(let j=0;j<pending.length;j+=6){const outcomes=await Promise.allSettled(pending.slice(j,j+6).map(entry=>saveReading(entry,entry.envelope)));unavailable+=outcomes.filter(result=>result.status==='rejected').length;}
+        archiveVersions.set(ref.path,{sha256:ref.sha256,entries:descriptors});entries.push(...descriptors);
+      }));
+      results.forEach((result,index)=>{if(result.status==='rejected'){unavailable++;const prior=archiveVersions.get(refs[i+index].path);if(prior)entries.push(...prior.entries);}});
+    }
+    if(unavailable)notes.push('Lecturas históricas no disponibles: '+unavailable+'. Se muestran las demás lecturas validadas.');
+    return entries;
+  }
   async function readDashboard(){
     const stamp='?at='+Math.floor(Date.now()/45000),notes=[];
     const dailyURL='https://raw.githubusercontent.com/Stronghand42/portfolio-dashboard/main/nav_history.csv';
@@ -226,37 +304,32 @@ button,select,.file-label,input[type=number],.pages-access input{background:#e4e
     const text=await response.text();if(text.length>2_000_000)throw Error('Historial EOD demasiado grande.');
     let daily=IntradayValidator.parseDailyCSV(text,portfolioDay(Date.now())),health=null;
     try{
-      const manifest=await fetchJSON(feed+'manifest.json'+stamp,1_000_000),now=Date.now();
+      const activeFeed=await resolveReadingFeed(),manifest=await fetchJSON(activeFeed+'manifest.json'+stamp,1_000_000),now=Date.now();
       if(manifest.version!==1||!Array.isArray(manifest.entries)||manifest.entries.length>12000)throw Error('Índice de lecturas inválido.');
-      const paths=new Set();
-      const entries=manifest.entries.map(entry=>{
-        if(typeof entry.path!=='string'||!/^\d{4}-\d{2}-\d{2}\/\d{2}-\d{2}\.json$/.test(entry.path)||typeof entry.timestamp!=='string'||!Number.isFinite(Date.parse(entry.timestamp))||Date.parse(entry.timestamp)>now+120000||paths.has(entry.path))throw Error('Índice de lecturas inválido.');
-        paths.add(entry.path);return entry;
-      }).sort((a,b)=>Date.parse(a.timestamp)-Date.parse(b.timestamp));
-      const wanted=entries;
-      const pending=wanted.filter(entry=>saved.get(entry.path)?.timestamp!==entry.timestamp);
+      const paths=new Set(),entries=manifest.entries.map(entry=>{checkReadingEntry(entry,now);if(paths.has(entry.path))throw Error('Índice de lecturas inválido.');paths.add(entry.path);return entry;}).sort((a,b)=>b.timestamp.localeCompare(a.timestamp));
       let unavailable=0;
+      const pending=entries.filter(entry=>saved.get(entry.path)?.timestamp!==entry.timestamp);
+      // Read the newest point first: its shared daily baseline covers the history.
       for(let i=0;i<pending.length;i+=6){
-        const outcomes=await Promise.allSettled(pending.slice(i,i+6).map(async entry=>{
-          const payload=await decryptReading(await fetchJSON(feed+entry.path+'?version='+encodeURIComponent(entry.timestamp),3_000_000,'force-cache'));
-          if(payload.timestamp!==entry.timestamp)throw Error('La fecha de una lectura no coincide con su índice.');
-          if(payload.kind==='error'){
-            if(typeof payload.error!=='string'||payload.error.length>400)throw Error('Aviso de actualización inválido.');
-            saved.set(entry.path,{timestamp:entry.timestamp,payload});
-          }else saved.set(entry.path,{timestamp:entry.timestamp,payload:IntradayValidator.validateSnapshot(payload,Date.parse(entry.timestamp))});
-        }));
-        unavailable+=outcomes.filter(outcome=>outcome.status==='rejected').length;
+        const outcomes=await Promise.allSettled(pending.slice(i,i+6).map(async entry=>saveReading(entry,await fetchJSON(activeFeed+entry.path+'?version='+encodeURIComponent(entry.timestamp),3_000_000,'force-cache'))));
+        unavailable+=outcomes.filter(result=>result.status==='rejected').length;
       }
       if(unavailable)notes.push('Lecturas intradiarias no disponibles: '+unavailable+'. Se muestran las demás lecturas validadas; faltan puntos.');
-      for(const path of saved.keys())if(!wanted.some(entry=>entry.path===path))saved.delete(path);
+      const historical=activeFeed===feed?[]:await archivedReadings(activeFeed,stamp,now,notes),combined=new Map(historical.map(entry=>[entry.path,entry]));
+      entries.forEach(entry=>{const old=combined.get(entry.path);if(!old||old.timestamp<entry.timestamp)combined.set(entry.path,entry);});
+      const wanted=[...combined.values()].sort((a,b)=>Date.parse(a.timestamp)-Date.parse(b.timestamp)),wantedPaths=new Set(wanted.map(entry=>entry.path));
+      for(const path of saved.keys())if(!wantedPaths.has(path))saved.delete(path);
       const readings=wanted.map(entry=>saved.get(entry.path)?.payload).filter(Boolean).sort((a,b)=>Date.parse(a.timestamp)-Date.parse(b.timestamp));
       const valid=readings.filter(row=>row.kind!=='error'),last=readings.at(-1),success=valid.at(-1);
       if(success){
-        const history=new Map(success.daily_history.map(row=>[row.date,row]));
+        const history=new Map((readerDailyHistory??[]).map(row=>[row.date,row]));
         daily=daily.map(row=>{const prior=history.get(row.date);return {...row,qqq_nav:prior&&Math.abs(prior.nav-row.nav)<.0001?(prior.qqq_nav??null):null};});
       }
+      // Older chart points need quality flags, not repeated source diagnostics.
+      for(const row of valid)if(row!==success)row.sources=row.sources.filter(source=>['unverified','stale'].includes(source.status)).map(source=>({status:source.status}));
+      for(const path of baselineReads.keys())if(path!==success?.history_path)baselineReads.delete(path);
       if(last)health={last_attempt:last.timestamp,last_success:success?.timestamp??null,error:last.kind==='error'?last.error:last.kind==='partial'?(last.warnings[0]??'Lectura incompleta.'):null,partial:last.kind==='partial'};
-      return {daily,points:valid.map(({daily_history,...row})=>row),health,notes,server_time:new Date().toISOString()};
+      return {daily,points:valid,health,notes,server_time:new Date().toISOString()};
     }catch{notes.push('No se pudo cargar la última lectura intradiaria. Se conserva el historial EOD.');return {daily,points:cache?.points??[],health:cache?.health??health,notes,server_time:new Date().toISOString()};}
   }
   window.pagesDashboardData=async function(force=false){
@@ -290,7 +363,8 @@ let selectedBenchmark="VOO";
 function benchmarkNav(row){return selectedBenchmark==='QQQ'?(row.qqq_nav??null):row.benchmark_nav;}
 function benchmarkBase(row){return selectedBenchmark==='QQQ'?(row.base_qqq_nav??null):row.base_benchmark_nav;}
 function intradayDifference(a,b){return Number.isFinite(a)&&Number.isFinite(b)?a-b:null;}
-function portfolioDay(time){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Lima',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(time));}
+const portfolioDayFormatter=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Lima',year:'numeric',month:'2-digit',day:'2-digit'});
+function portfolioDay(time){return portfolioDayFormatter.format(new Date(time));}
 function portfolioCurve(daily,readings,comparison=selectedBenchmark){
   const value=row=>comparison==='QQQ'?(row.qqq_nav??null):row.benchmark_nav;
   const intraday=readings.map(row=>({...row,day:portfolioDay(row.timestamp),time:Date.parse(row.timestamp),comparison:value(row)}));
@@ -369,7 +443,7 @@ function intradayHeadline(points){
   const first=points[0],last=points.at(-1),days=(last.time-first.time)/86400000;
   const ratio=(v,b)=>Number.isFinite(v)&&Number.isFinite(b)&&b>0?(v/b-1)*100:null;
   const annual=key=>days>0&&Number.isFinite(first[key])&&first[key]>0&&Number.isFinite(last[key])&&last[key]>0&&(key==='nav'||points.every(p=>Number.isFinite(p[key])&&p[key]>0))?(Math.pow(last[key]/first[key],365.25/days)-1)*100:null;
-  const minimum=key=>{const v=points.map(p=>p[key]).filter(Number.isFinite);return v.length?Math.min(...v):null;};
+  const minimum=key=>{let value=null;for(const point of points)if(Number.isFinite(point[key]))value=value===null?point[key]:Math.min(value,point[key]);return value;};
   const benchmarkComplete=points.every(p=>Number.isFinite(p.comparison)&&p.comparison>0);
   return {first,last,days,cum:ratio(last.nav,first.nav),benchmark:ratio(last.comparison,first.comparison),cagr:annual('nav'),bcagr:annual('comparison'),maxdd:minimum('dd'),dd:last.dd,bmaxdd:benchmarkComplete?minimum('benchDD'):null,bdd:benchmarkComplete?last.benchDD:null};
 }
@@ -436,7 +510,7 @@ if (typeof document !== 'undefined') {
     if(!drawdown){({svg,h,p,x,y}=drawEquityChart({host,times:points.map(d=>d.time),series,labels:['Estrategia',selectedBenchmark],colors,timeZone:'America/Lima',intraday:true}));}
     else{
       h=190;p={l:8,r:60,t:16,b:32};
-      const values=series.flat().filter(Number.isFinite);let low=Math.min(0,...values),high=0;if(low===high)low-=.5;low-=(high-low)*.12;
+      const values=series.flat().filter(Number.isFinite);let low=values.reduce((minimum,value)=>Math.min(minimum,value),0),high=0;if(low===high)low-=.5;low-=(high-low)*.12;
       const span=points.at(-1).time-points[0].time;x=i=>p.l+(span?(points[i].time-points[0].time)/span:0)*(w-p.l-p.r);y=v=>p.t+(high-v)/(high-low)*(h-p.t-p.b);
       svg=node('svg',{viewBox:`0 0 ${w} ${h}`,role:'img','aria-label':'Drawdown desde máximos históricos'});svg.style.height=h+'px';host.append(svg);
       for(let j=0;j<5;j++){const v=low+(high-low)*j/4;svg.append(node('line',{x1:p.l,x2:w-p.r,y1:y(v),y2:y(v),stroke:'#eef1f4'}),node('text',{x:w-p.r+8,y:y(v)+3,fill:'#8792a2','font-size':10},v.toFixed(high-low<2?2:1)+'%'));}
@@ -481,8 +555,8 @@ if (typeof document !== 'undefined') {
     live('live-dd-note').textContent=all.some(p=>!Number.isFinite(p.comparison))?selectedBenchmark+': historial incompleto':'Máximos desde el inicio del historial';
     plot('live-equity',selected,base);plot('live-underwater',selected,base,true);
     const label=p=>p.kind==='eod'?p.day+' · EOD':limaTime(p.timestamp);
-    liveRows('live-chart-table',selected.map(d=>{const a=rel(d.nav,base.nav),b=rel(d.comparison,base.comparison),delta=intradayDifference(a,b);return [label(d),{text:pct(a),cls:ink(a)},{text:pct(b),cls:ink(b)},{text:pp(delta),cls:ink(delta)}];}));
-    liveRows('live-drawdown-table',selected.map(d=>[label(d),{text:ddPct(d.dd),cls:ink(d.dd)},...(compare?[{text:ddPct(d.benchDD),cls:ink(d.benchDD)}]:[])]));
+    liveRows('live-chart-table',selected.slice(-500).map(d=>{const a=rel(d.nav,base.nav),b=rel(d.comparison,base.comparison),delta=intradayDifference(a,b);return [label(d),{text:pct(a),cls:ink(a)},{text:pct(b),cls:ink(b)},{text:pp(delta),cls:ink(delta)}];}));
+    liveRows('live-drawdown-table',selected.slice(-500).map(d=>[label(d),{text:ddPct(d.dd),cls:ink(d.dd)},...(compare?[{text:ddPct(d.benchDD),cls:ink(d.benchDD)}]:[])]));
     document.querySelectorAll('[data-live-range]').forEach(b=>b.setAttribute('aria-pressed',String(!liveWindow&&b.dataset.liveRange===liveRange)));
   }
   function renderLive(){
