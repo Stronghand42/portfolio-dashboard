@@ -236,7 +236,7 @@ button,select,.file-label,input[type=number],.pages-access input{background:#e4e
     if(entry.path!==time.slice(0,10)+'/'+time.slice(11,16).replace(':','-')+'.json')throw Error('Ranura de lectura inválida.');
     return entry;
   }
-  async function saveReading(entry,envelope){
+  async function saveReading(entry,envelope,base=transportFeed){
     const payload=await decryptReading(envelope);
     if(payload.timestamp!==entry.timestamp)throw Error('La fecha de una lectura no coincide con su índice.');
     if(payload.kind==='error'){
@@ -249,7 +249,7 @@ button,select,.file-label,input[type=number],.pages-access input{background:#e4e
       if(payload.history_path!==undefined){
         if(typeof payload.history_path!=='string'||!/^baselines\/\d{4}-\d{2}-\d{2}-[a-f0-9]{16}\.json$/.test(payload.history_path))throw Error('Base histórica inválida.');
         const path=payload.history_path;
-        if(!baselineReads.has(path))baselineReads.set(path,(async()=>{try{const box=await fetchJSON(transportFeed+path+'?version='+path.split('/').at(-1),3_000_000,'force-cache');return await decryptReading(box);}catch(error){baselineReads.delete(path);throw error;}})());
+        if(!baselineReads.has(path))baselineReads.set(path,(async()=>{try{const box=await fetchJSON(base+path+'?version='+path.split('/').at(-1),3_000_000,'force-cache');return await decryptReading(box);}catch(error){baselineReads.delete(path);throw error;}})());
         const baseline=await baselineReads.get(path);
         if(baseline.schema_version!==1||baseline.base_date!==payload.base_date)throw Error('Base histórica inconsistente.');
         IntradayValidator.validateSnapshot({...payload,daily_history:baseline.daily_history},Date.parse(entry.timestamp));history=baseline.daily_history;
@@ -288,7 +288,7 @@ button,select,.file-label,input[type=number],.pages-access input{background:#e4e
         const paths=new Set(),descriptors=bundle.entries.map(entry=>{checkReadingEntry(entry,now);if(!entry.path.startsWith(ref.day+'/')||paths.has(entry.path))throw Error('Fecha histórica inválida.');paths.add(entry.path);return {path:entry.path,timestamp:entry.timestamp};});
         if(descriptors.at(-1)?.timestamp!==ref.last)throw Error('Última fecha histórica inválida.');
         const pending=bundle.entries.filter(entry=>saved.get(entry.path)?.timestamp!==entry.timestamp).sort((a,b)=>b.timestamp.localeCompare(a.timestamp));
-        for(let j=0;j<pending.length;j+=6){const outcomes=await Promise.allSettled(pending.slice(j,j+6).map(entry=>saveReading(entry,entry.envelope)));unavailable+=outcomes.filter(result=>result.status==='rejected').length;}
+        for(let j=0;j<pending.length;j+=6){const outcomes=await Promise.allSettled(pending.slice(j,j+6).map(entry=>saveReading(entry,entry.envelope,base)));unavailable+=outcomes.filter(result=>result.status==='rejected').length;}
         archiveVersions.set(ref.path,{sha256:ref.sha256,entries:descriptors});entries.push(...descriptors);
       }));
       results.forEach((result,index)=>{if(result.status==='rejected'){unavailable++;const prior=archiveVersions.get(refs[i+index].path);if(prior)entries.push(...prior.entries);}});
@@ -303,34 +303,62 @@ button,select,.file-label,input[type=number],.pages-access input{background:#e4e
     if(!response.ok)throw Error('No se pudo cargar el historial EOD.');
     const text=await response.text();if(text.length>2_000_000)throw Error('Historial EOD demasiado grande.');
     let daily=IntradayValidator.parseDailyCSV(text,portfolioDay(Date.now())),health=null;
-    try{
-      const activeFeed=await resolveReadingFeed(),manifest=await fetchJSON(activeFeed+'manifest.json'+stamp,1_000_000),now=Date.now();
+    function enrichDaily(){
+      if(!readerDailyHistory)return;
+      const history=new Map(readerDailyHistory.map(row=>[row.date,row]));
+      daily=daily.map(row=>{const prior=history.get(row.date);return {...row,qqq_nav:prior&&Math.abs(prior.nav-row.nav)<.0001?(prior.qqq_nav??null):null};});
+    }
+    async function readLive(base,now){
+      const manifest=await fetchJSON(base+'manifest.json'+stamp,1_000_000);
       if(manifest.version!==1||!Array.isArray(manifest.entries)||manifest.entries.length>12000)throw Error('Índice de lecturas inválido.');
       const paths=new Set(),entries=manifest.entries.map(entry=>{checkReadingEntry(entry,now);if(paths.has(entry.path))throw Error('Índice de lecturas inválido.');paths.add(entry.path);return entry;}).sort((a,b)=>b.timestamp.localeCompare(a.timestamp));
-      let unavailable=0;
-      const pending=entries.filter(entry=>saved.get(entry.path)?.timestamp!==entry.timestamp);
-      // Read the newest point first: its shared daily baseline covers the history.
+      const pending=entries.filter(entry=>saved.get(entry.path)?.timestamp!==entry.timestamp);let unavailable=0;
       for(let i=0;i<pending.length;i+=6){
-        const outcomes=await Promise.allSettled(pending.slice(i,i+6).map(async entry=>saveReading(entry,await fetchJSON(activeFeed+entry.path+'?version='+encodeURIComponent(entry.timestamp),3_000_000,'force-cache'))));
-        unavailable+=outcomes.filter(result=>result.status==='rejected').length;
+        const outcomes=await Promise.allSettled(pending.slice(i,i+6).map(async entry=>saveReading(entry,await fetchJSON(base+entry.path+'?version='+encodeURIComponent(entry.timestamp),3_000_000,'force-cache'),base)));
+        const failed=outcomes.filter(result=>result.status==='rejected').length;unavailable+=failed;
+        // Recover through the existing encrypted mirror if this connection cannot
+        // deliver even its first batch. Do not wait through the entire history.
+        if(i===0&&base!==feed&&failed===outcomes.length&&pending.length===entries.length)throw Error('Conexión de lecturas no disponible.');
       }
+      return {entries,unavailable};
+    }
+    try{
+      let activeFeed=await resolveReadingFeed(),live;const now=Date.now();
+      try{live=await readLive(activeFeed,now);}
+      catch(error){
+        if(activeFeed===feed)throw error;
+        live=await readLive(feed,now);activeFeed=feed;
+        notes.push('Conexión directa temporalmente no disponible. Se utilizan las lecturas cifradas de respaldo.');
+      }
+      const {entries,unavailable}=live;
       if(unavailable)notes.push('Lecturas intradiarias no disponibles: '+unavailable+'. Se muestran las demás lecturas validadas; faltan puntos.');
-      const historical=activeFeed===feed?[]:await archivedReadings(activeFeed,stamp,now,notes),combined=new Map(historical.map(entry=>[entry.path,entry]));
+      let historical=[];
+      if(activeFeed!==feed){
+        try{historical=await archivedReadings(activeFeed,stamp,now,notes);}
+        catch{
+          historical=[...saved.entries()].map(([path,value])=>({path,timestamp:value.timestamp}));
+          notes.push('No se pudo actualizar el archivo histórico intradiario. Se conservan las lecturas validadas disponibles.');
+        }
+      }
+      const combined=new Map(historical.map(entry=>[entry.path,entry]));
       entries.forEach(entry=>{const old=combined.get(entry.path);if(!old||old.timestamp<entry.timestamp)combined.set(entry.path,entry);});
       const wanted=[...combined.values()].sort((a,b)=>Date.parse(a.timestamp)-Date.parse(b.timestamp)),wantedPaths=new Set(wanted.map(entry=>entry.path));
       for(const path of saved.keys())if(!wantedPaths.has(path))saved.delete(path);
       const readings=wanted.map(entry=>saved.get(entry.path)?.payload).filter(Boolean).sort((a,b)=>Date.parse(a.timestamp)-Date.parse(b.timestamp));
       const valid=readings.filter(row=>row.kind!=='error'),last=readings.at(-1),success=valid.at(-1);
-      if(success){
-        const history=new Map((readerDailyHistory??[]).map(row=>[row.date,row]));
-        daily=daily.map(row=>{const prior=history.get(row.date);return {...row,qqq_nav:prior&&Math.abs(prior.nav-row.nav)<.0001?(prior.qqq_nav??null):null};});
-      }
+      if(success)enrichDaily();
       // Older chart points need quality flags, not repeated source diagnostics.
       for(const row of valid)if(row!==success)row.sources=row.sources.filter(source=>['unverified','stale'].includes(source.status)).map(source=>({status:source.status}));
       for(const path of baselineReads.keys())if(path!==success?.history_path)baselineReads.delete(path);
       if(last)health={last_attempt:last.timestamp,last_success:success?.timestamp??null,error:last.kind==='error'?last.error:last.kind==='partial'?(last.warnings[0]??'Lectura incompleta.'):null,partial:last.kind==='partial'};
       return {daily,points:valid,health,notes,server_time:new Date().toISOString()};
-    }catch{notes.push('No se pudo cargar la última lectura intradiaria. Se conserva el historial EOD.');return {daily,points:cache?.points??[],health:cache?.health??health,notes,server_time:new Date().toISOString()};}
+    }catch{
+      const retained=new Map((cache?.points??[]).map(point=>[point.timestamp,point]));
+      for(const {payload}of saved.values())if(payload.kind!=='error')retained.set(payload.timestamp,payload);
+      const points=[...retained.values()].sort((a,b)=>Date.parse(a.timestamp)-Date.parse(b.timestamp));enrichDaily();
+      notes.push(points.length?'No se pudo actualizar intradía. Se conservan las últimas lecturas validadas.':'No se pudo cargar la última lectura intradiaria. Se conserva el historial EOD.');
+      return {daily,points,health:cache?.health??health,notes,server_time:new Date().toISOString()};
+    }
   }
   window.pagesDashboardData=async function(force=false){
     await ready;if(flight)return flight;
