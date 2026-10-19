@@ -425,11 +425,23 @@ async function dashboardData(force = false) {
 // Calendar windows retain a real base observation; zoom never resets drawdown peaks.
 function intradayWindow(points,range='ALL',zoom=null){
   if(!points.length)return {selected:[],partial:false};
-  if(zoom)return {selected:points.filter(p=>p.time>=zoom[0]&&p.time<=zoom[1]),partial:false};
+  if(zoom){
+    const selected=points.filter(p=>p.time>=zoom[0]&&p.time<=zoom[1]);
+    return range==='1D'?{...intradayWindow(points,range),selected}:{selected,partial:false};
+  }
   if(range==='ALL')return {selected:points,partial:false};
   const day=points.at(-1).day,date=new Date(day+'T00:00:00Z');
   if(range==='1D'){
-    const first=points.findIndex(p=>p.day===day),base=Math.max(0,first-1);
+    const first=points.findIndex(p=>p.day===day),today=points.slice(first);
+    // Daily returns use a validated closing NAV, even when the previous
+    // observation is incomplete. Plot only today's actual observations.
+    const anchors=today.filter(p=>p.base_date<day&&Number.isFinite(p.base_nav)&&p.base_nav>0);
+    const anchor=anchors.at(-1);
+    if(anchor){
+      const comparable=anchors.findLast(p=>p.base_date===anchor.base_date&&Number.isFinite(benchmarkBase(p))&&benchmarkBase(p)>0);
+      return {selected:today,partial:false,base:{day:anchor.base_date,nav:anchor.base_nav,comparison:comparable?benchmarkBase(comparable):null},baseDate:anchor.base_date};
+    }
+    const base=Math.max(0,first-1);
     return {selected:points.slice(base),partial:first===0};
   }
   let wanted;
@@ -574,9 +586,9 @@ if (typeof document !== 'undefined') {
   function drawLive(){
     const all=mappedPoints();let windowed=intradayWindow(all,liveRange,liveWindow);
     if(liveWindow&&!windowed.selected.length){liveWindow=null;windowed=intradayWindow(all,liveRange);}
-    const selected=windowed.selected,base=selected[0],compare=live('live-compare-dd').checked;
+    const selected=windowed.selected,base=windowed.base??selected[0],compare=live('live-compare-dd').checked;
     live('live-history-note').textContent=livePayload?.daily.length?'Historial desde '+livePayload.daily[0].date+' · '+all.filter(p=>p.kind!=='eod').length+' lecturas intradiarias conservadas · Hora de Perú':'Esperando historial EOD';
-    live('live-range-note').textContent=base?base.day+' → '+selected.at(-1).day+(liveWindow?' · Tramo ampliado':windowed.partial?' · Historial parcial':''):'—';
+    live('live-range-note').textContent=selected.length?selected[0].day+' → '+selected.at(-1).day+(windowed.baseDate?' · Base: cierre '+windowed.baseDate:'')+(liveWindow?' · Tramo ampliado':windowed.partial?' · Historial parcial':''):'—';
     live('live-reset-zoom').hidden=!liveWindow;
     live('live-benchmark-legend').hidden=!Number.isFinite(base?.comparison);
     live('live-dd-benchmark-legend').hidden=!compare;live('live-dd-table-heading').hidden=!compare;
